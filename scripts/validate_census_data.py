@@ -3,7 +3,7 @@
 validate_census_data.py - Census ACS B28002 Data Integrity & Validation Audit
 
 Audits local Census ACS JSON file (Table B28002, 2024 5-Year ACS county geography)
-for structural integrity and basic data validity.
+for structural integrity and strict data validity.
 
 Usage:
     python scripts/validate_census_data.py --input data/raw/acs_b28002_2024_county.json --output reports/census_validation.json
@@ -42,6 +42,15 @@ DISCLAIMER = (
     "project acceptance."
 )
 
+OFFICIAL_GEOGRAPHY_URL = (
+    "https://www.census.gov/programs-surveys/acs/geography-acs/areas-published.html"
+)
+OFFICIAL_5YEAR_COUNTY_COUNT = 3222
+
+INTEGER_STRING_PATTERN = re.compile(r"^-?[0-9]+$")
+FIPS_STATE_PATTERN = re.compile(r"^[0-9]{2}$")
+FIPS_COUNTY_PATTERN = re.compile(r"^[0-9]{3}$")
+
 
 def validate_census_file(input_path: str, output_path: str) -> int:
     input_file = Path(input_path)
@@ -70,6 +79,10 @@ def validate_census_file(input_path: str, output_path: str) -> int:
                 "Does not evaluate FCC data comparability or project acceptance."
             ),
             "disclaimer": DISCLAIMER,
+            "official_geography_reference": {
+                "url": OFFICIAL_GEOGRAPHY_URL,
+                "published_county_count_5year_2024": OFFICIAL_5YEAR_COUNTY_COUNT,
+            },
         },
         "overall_status": "FAIL",
         "hard_checks": {},
@@ -142,12 +155,6 @@ def validate_census_file(input_path: str, output_path: str) -> int:
         _print_summary(report)
         return 1
 
-    report["hard_checks"]["top_level_is_array"] = {
-        "status": "PASS",
-        "description": "Top-level content is an array containing header plus data rows.",
-        "details": {"total_array_elements": len(raw_data)},
-    }
-
     # Check 3: Header matches expected
     header = raw_data[0]
     if header != EXPECTED_HEADER:
@@ -167,6 +174,25 @@ def validate_census_file(input_path: str, output_path: str) -> int:
 
     data_rows = raw_data[1:]
     total_data_rows = len(data_rows)
+
+    # Check that dataset contains data rows (not just the header)
+    if total_data_rows == 0:
+        report["hard_checks"]["top_level_is_array"] = {
+            "status": "FAIL",
+            "description": "Top-level content is an array containing header plus data rows.",
+            "error": "Top-level JSON array contains a header but zero data records.",
+            "details": {"total_array_elements": len(raw_data), "data_rows": 0},
+        }
+        hard_failures.append("top_level_is_array")
+        _save_report(report, output_file)
+        _print_summary(report)
+        return 1
+
+    report["hard_checks"]["top_level_is_array"] = {
+        "status": "PASS",
+        "description": "Top-level content is an array containing header plus data rows.",
+        "details": {"total_array_elements": len(raw_data), "data_rows": total_data_rows},
+    }
 
     # Check 4: Record field counts
     malformed_records = []
@@ -206,28 +232,33 @@ def validate_census_file(input_path: str, output_path: str) -> int:
     }
     broadband_exceeds_total = []
 
-    fips_state_pattern = re.compile(r"^\d{2}$")
-    fips_county_pattern = re.compile(r"^\d{3}$")
-
     for idx, row in enumerate(data_rows, start=2):
         if not isinstance(row, list) or len(row) < 7:
             continue
 
         name, b28002_001e, b28002_001m, b28002_007e, b28002_007m, state_fips, county_fips = row[:7]
 
-        # Name check
-        if not isinstance(name, str) or not name.strip():
+        # Name check: must be a non-empty string, not boolean
+        if not isinstance(name, str) or isinstance(name, bool) or not name.strip():
             empty_names.append({"row_index": idx, "row": row})
 
-        # FIPS format check
-        state_valid = isinstance(state_fips, str) and bool(fips_state_pattern.match(state_fips))
-        county_valid = isinstance(county_fips, str) and bool(fips_county_pattern.match(county_fips))
+        # FIPS format check: exact full-string match on 2 digits (state) and 3 digits (county)
+        state_valid = (
+            isinstance(state_fips, str)
+            and not isinstance(state_fips, bool)
+            and bool(FIPS_STATE_PATTERN.fullmatch(state_fips))
+        )
+        county_valid = (
+            isinstance(county_fips, str)
+            and not isinstance(county_fips, bool)
+            and bool(FIPS_COUNTY_PATTERN.fullmatch(county_fips))
+        )
         if not (state_valid and county_valid):
             invalid_fips.append({
                 "row_index": idx,
-                "name": name,
-                "state": state_fips,
-                "county": county_fips,
+                "name": name if isinstance(name, str) else repr(name),
+                "state": state_fips if isinstance(state_fips, str) else repr(state_fips),
+                "county": county_fips if isinstance(county_fips, str) else repr(county_fips),
             })
         else:
             unique_state_codes.add(state_fips)
@@ -242,52 +273,70 @@ def validate_census_file(input_path: str, output_path: str) -> int:
             else:
                 fips_seen[full_fips] = idx
 
-        # Numeric field parsing and validation
+        # Numeric field parsing and strict validation
         row_id = f"{state_fips}{county_fips} ({name})"
         parsed_row_nums = {}
 
         for col_name, col_idx in NUMERIC_FIELDS:
             raw_val = row[col_idx]
+
+            # Missing, empty string, or whitespace
             if raw_val is None or (isinstance(raw_val, str) and not raw_val.strip()):
                 blank_values.append({
                     "row_index": idx,
                     "identifier": row_id,
                     "field": col_name,
-                    "value": raw_val,
+                    "value": repr(raw_val),
+                    "value_type": type(raw_val).__name__,
                 })
                 continue
 
-            try:
-                # Do not silently convert; parse strictly as integer
-                val_int = int(raw_val)
-                parsed_row_nums[col_name] = val_int
+            # Strict typing: reject booleans and non-string types (float, int literal, etc.)
+            if isinstance(raw_val, bool) or not isinstance(raw_val, str):
+                unparsable_values[col_name].append({
+                    "row_index": idx,
+                    "identifier": row_id,
+                    "field": col_name,
+                    "value": repr(raw_val),
+                    "value_type": type(raw_val).__name__,
+                    "reason": f"Expected signed integer string, received {type(raw_val).__name__}",
+                })
+                continue
 
-                # Nonnegative check
-                if val_int < 0:
-                    negative_values[col_name].append({
-                        "row_index": idx,
-                        "identifier": row_id,
-                        "field": col_name,
-                        "value": val_int,
-                    })
-
-                # Stats tracking
-                st = numeric_stats[col_name]
-                st["parsed_count"] += 1
-                if val_int == 0:
-                    st["zero_count"] += 1
-                if st["min"] is None or val_int < st["min"]:
-                    st["min"] = val_int
-                if st["max"] is None or val_int > st["max"]:
-                    st["max"] = val_int
-
-            except (ValueError, TypeError):
+            # Strict pattern check: complete match against -?[0-9]+
+            if not INTEGER_STRING_PATTERN.fullmatch(raw_val):
                 unparsable_values[col_name].append({
                     "row_index": idx,
                     "identifier": row_id,
                     "field": col_name,
                     "value": raw_val,
+                    "value_type": "str",
+                    "reason": "String does not match complete signed integer pattern -?[0-9]+",
                 })
+                continue
+
+            # Parse integer
+            val_int = int(raw_val)
+            parsed_row_nums[col_name] = val_int
+
+            # Non-negative check
+            if val_int < 0:
+                negative_values[col_name].append({
+                    "row_index": idx,
+                    "identifier": row_id,
+                    "field": col_name,
+                    "value": val_int,
+                })
+
+            # Stats tracking
+            st = numeric_stats[col_name]
+            st["parsed_count"] += 1
+            if val_int == 0:
+                st["zero_count"] += 1
+            if st["min"] is None or val_int < st["min"]:
+                st["min"] = val_int
+            if st["max"] is None or val_int > st["max"]:
+                st["max"] = val_int
 
         # Relational check: B28002_007E <= B28002_001E
         if "B28002_001E" in parsed_row_nums and "B28002_007E" in parsed_row_nums:
@@ -323,7 +372,7 @@ def validate_census_file(input_path: str, output_path: str) -> int:
     if invalid_fips:
         report["hard_checks"]["fips_format_valid"] = {
             "status": "FAIL",
-            "description": "state is 2 digits and county is 3 digits, preserving leading zeros.",
+            "description": "state is exactly 2 digits and county is exactly 3 digits, preserving leading zeros.",
             "invalid_count": len(invalid_fips),
             "examples": invalid_fips[:5],
         }
@@ -331,7 +380,7 @@ def validate_census_file(input_path: str, output_path: str) -> int:
     else:
         report["hard_checks"]["fips_format_valid"] = {
             "status": "PASS",
-            "description": "state is 2 digits and county is 3 digits, preserving leading zeros.",
+            "description": "state is exactly 2 digits and county is exactly 3 digits, preserving leading zeros.",
             "invalid_count": 0,
         }
 
@@ -352,13 +401,13 @@ def validate_census_file(input_path: str, output_path: str) -> int:
             "unique_key_count": len(fips_seen),
         }
 
-    # Numeric integers parsable check
+    # Numeric integers strictly parsable check
     total_unparsable = sum(len(v) for v in unparsable_values.values())
     total_blank = len(blank_values)
     if total_unparsable > 0 or total_blank > 0:
         report["hard_checks"]["numeric_fields_parse_integers"] = {
             "status": "FAIL",
-            "description": "All four estimate/MOE fields parse as numeric integers.",
+            "description": "All four estimate/MOE fields strictly parse as integer strings matching -?[0-9]+.",
             "unparsable_by_column": {k: len(v) for k, v in unparsable_values.items()},
             "blank_values_count": total_blank,
             "examples_unparsable": [ex for v in unparsable_values.values() for ex in v][:5],
@@ -368,7 +417,7 @@ def validate_census_file(input_path: str, output_path: str) -> int:
     else:
         report["hard_checks"]["numeric_fields_parse_integers"] = {
             "status": "PASS",
-            "description": "All four estimate/MOE fields parse as numeric integers.",
+            "description": "All four estimate/MOE fields strictly parse as integer strings matching -?[0-9]+.",
             "unparsable_count": 0,
             "blank_count": 0,
         }
@@ -406,19 +455,29 @@ def validate_census_file(input_path: str, output_path: str) -> int:
             "violation_count": 0,
         }
 
-    # Non-fatal review flag: Row count review against ~3,000 county equivalents
+    # Step 2: Geography Review / Informational Diagnostic
+    is_count_expected = (total_data_rows == OFFICIAL_5YEAR_COUNTY_COUNT)
     report["review_flags"]["county_record_count_review"] = {
-        "status": "REVIEW",
-        "description": "Report deviations from approximately 3,000 county-equivalent records for review.",
+        "status": "INFORMATIONAL" if is_count_expected else "REVIEW",
+        "description": "Verification of county-or-equivalent record count against official Census ACS publication.",
         "actual_data_rows": total_data_rows,
-        "approximate_baseline": 3000,
-        "deviation_from_baseline": total_data_rows - 3000,
+        "official_published_count": OFFICIAL_5YEAR_COUNTY_COUNT,
+        "count_matches_official": is_count_expected,
+        "official_source_url": OFFICIAL_GEOGRAPHY_URL,
         "notes": (
-            f"Observed {total_data_rows} data rows. Standard 5-Year ACS county coverage spans "
-            "50 US states (3,143 counties/equivalents, adjusted to 3,144 with Connecticut's "
-            "9 planning regions replacing 8 counties) + DC (1) + Puerto Rico (78 municipios), "
-            f"totalling 3,222 geographic entities across 52 state FIPS codes. "
-            "Coverage is consistent with comprehensive ACS county geography."
+            f"Observed count of {total_data_rows} data rows matches the official 3,222 "
+            f"county-or-equivalent areas published by the U.S. Census Bureau for the 2024 "
+            f"ACS 5-year estimates ({OFFICIAL_GEOGRAPHY_URL}). Per official Census documentation, "
+            "county equivalents include geographic entities such as the District of Columbia, "
+            "Puerto Rico municipios, and Connecticut planning regions. While the observed "
+            "record count aligns with official publication, count agreement alone does not "
+            "establish geographic boundary definitions, entity membership, or statistical "
+            "comparability with FCC provider-reported availability data."
+        ) if is_count_expected else (
+            f"Observed count of {total_data_rows} data rows deviates by "
+            f"{total_data_rows - OFFICIAL_5YEAR_COUNTY_COUNT} from the official 3,222 "
+            f"county-or-equivalent areas published by the U.S. Census Bureau for the 2024 "
+            f"ACS 5-year estimates ({OFFICIAL_GEOGRAPHY_URL})."
         ),
     }
 
@@ -490,11 +549,13 @@ def _print_summary(report: dict) -> None:
             print(f"  * {check_id}:")
             if "error" in check_data:
                 print(f"    Error: {check_data['error']}")
+            if "examples_unparsable" in check_data:
+                print(f"    Examples Unparsable: {check_data['examples_unparsable']}")
             if "examples" in check_data:
                 print(f"    Examples: {check_data['examples']}")
 
     print("-" * 72)
-    print(" REVIEW FLAGS:")
+    print(" REVIEW / INFORMATIONAL DIAGNOSTICS:")
     for flag_id, flag_data in review_flags.items():
         print(f"  [{flag_data.get('status')}] {flag_id}: {flag_data.get('description')}")
         print(f"    Notes: {flag_data.get('notes')}")
@@ -529,7 +590,7 @@ def _print_summary(report: dict) -> None:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Audit Census ACS JSON data file for structural integrity and data validity."
+        description="Audit Census ACS JSON data file for structural integrity and strict data validity."
     )
     parser.add_argument(
         "--input",

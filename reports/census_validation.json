@@ -15,9 +15,13 @@
     },
     "input_path": "data/raw/acs_b28002_2024_county.json",
     "file_size_bytes": 220007,
-    "audit_timestamp_utc": "2026-10-17T20:21:29.011840+00:00",
+    "audit_timestamp_utc": "2026-10-17T20:35:11.743764+00:00",
     "validation_scope": "Initial Census-source data integrity audit (structural & basic data validity). Does not evaluate FCC data comparability or project acceptance.",
-    "disclaimer": "Structural validity does not establish statistical comparability with FCC provider-reported availability, geographic representativeness, causality, or overall project feasibility. A successful basic audit is not an overall project acceptance."
+    "disclaimer": "Structural validity does not establish statistical comparability with FCC provider-reported availability, geographic representativeness, causality, or overall project feasibility. A successful basic audit is not an overall project acceptance.",
+    "official_geography_reference": {
+      "url": "https://www.census.gov/programs-surveys/acs/geography-acs/areas-published.html",
+      "published_county_count_5year_2024": 3222
+    }
   },
   "overall_status": "PASS",
   "hard_checks": {
@@ -32,13 +36,6 @@
       "status": "PASS",
       "description": "JSON parses successfully."
     },
-    "top_level_is_array": {
-      "status": "PASS",
-      "description": "Top-level content is an array containing header plus data rows.",
-      "details": {
-        "total_array_elements": 3223
-      }
-    },
     "header_matches_expected": {
       "status": "PASS",
       "description": "Header matches exactly, in order: NAME, B28002_001E, B28002_001M, B28002_007E, B28002_007M, state, county",
@@ -52,6 +49,14 @@
         "county"
       ]
     },
+    "top_level_is_array": {
+      "status": "PASS",
+      "description": "Top-level content is an array containing header plus data rows.",
+      "details": {
+        "total_array_elements": 3223,
+        "data_rows": 3222
+      }
+    },
     "record_field_counts_valid": {
       "status": "PASS",
       "description": "Every data record has exactly seven fields.",
@@ -64,7 +69,7 @@
     },
     "fips_format_valid": {
       "status": "PASS",
-      "description": "state is 2 digits and county is 3 digits, preserving leading zeros.",
+      "description": "state is exactly 2 digits and county is exactly 3 digits, preserving leading zeros.",
       "invalid_count": 0
     },
     "geography_keys_unique": {
@@ -75,7 +80,7 @@
     },
     "numeric_fields_parse_integers": {
       "status": "PASS",
-      "description": "All four estimate/MOE fields parse as numeric integers.",
+      "description": "All four estimate/MOE fields strictly parse as integer strings matching -?[0-9]+.",
       "unparsable_count": 0,
       "blank_count": 0
     },
@@ -92,12 +97,13 @@
   },
   "review_flags": {
     "county_record_count_review": {
-      "status": "REVIEW",
-      "description": "Report deviations from approximately 3,000 county-equivalent records for review.",
+      "status": "INFORMATIONAL",
+      "description": "Verification of county-or-equivalent record count against official Census ACS publication.",
       "actual_data_rows": 3222,
-      "approximate_baseline": 3000,
-      "deviation_from_baseline": 222,
-      "notes": "Observed 3222 data rows. Standard 5-Year ACS county coverage spans 50 US states (3,143 counties/equivalents, adjusted to 3,144 with Connecticut's 9 planning regions replacing 8 counties) + DC (1) + Puerto Rico (78 municipios), totalling 3,222 geographic entities across 52 state FIPS codes. Coverage is consistent with comprehensive ACS county geography."
+      "official_published_count": 3222,
+      "count_matches_official": true,
+      "official_source_url": "https://www.census.gov/programs-surveys/acs/geography-acs/areas-published.html",
+      "notes": "Observed count of 3222 data rows matches the official 3,222 county-or-equivalent areas published by the U.S. Census Bureau for the 2024 ACS 5-year estimates (https://www.census.gov/programs-surveys/acs/geography-acs/areas-published.html). Per official Census documentation, county equivalents include geographic entities such as the District of Columbia, Puerto Rico municipios, and Connecticut planning regions. While the observed record count aligns with official publication, count agreement alone does not establish geographic boundary definitions, entity membership, or statistical comparability with FCC provider-reported availability data."
     }
   },
   "summary_metrics": {
