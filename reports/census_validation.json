@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "source_name": "U.S. Census Bureau, American Community Survey (ACS)",
+    "acs_vintage": "2024 (5-Year Estimates)",
+    "table_name": "B28002 - PRESENCE AND TYPES OF INTERNET SUBSCRIPTIONS IN HOUSEHOLD",
+    "table_universe": "Total households",
+    "variables": {
+      "NAME": "Geographic Area Name (County and State)",
+      "B28002_001E": "Total households (Estimate)",
+      "B28002_001M": "Total households (Margin of Error)",
+      "B28002_007E": "Broadband such as cable, fiber optic or DSL (Estimate)",
+      "B28002_007M": "Broadband such as cable, fiber optic or DSL (Margin of Error)",
+      "state": "State FIPS Code (2 digits, zero-padded)",
+      "county": "County FIPS Code (3 digits, zero-padded)"
+    },
+    "input_path": "data/raw/acs_b28002_2024_county.json",
+    "file_size_bytes": 220007,
+    "audit_timestamp_utc": "2026-10-17T20:21:29.011840+00:00",
+    "validation_scope": "Initial Census-source data integrity audit (structural & basic data validity). Does not evaluate FCC data comparability or project acceptance.",
+    "disclaimer": "Structural validity does not establish statistical comparability with FCC provider-reported availability, geographic representativeness, causality, or overall project feasibility. A successful basic audit is not an overall project acceptance."
+  },
+  "overall_status": "PASS",
+  "hard_checks": {
+    "file_exists_and_nonempty": {
+      "status": "PASS",
+      "description": "File exists on disk and is nonempty.",
+      "details": {
+        "size_bytes": 220007
+      }
+    },
+    "valid_json_structure": {
+      "status": "PASS",
+      "description": "JSON parses successfully."
+    },
+    "top_level_is_array": {
+      "status": "PASS",
+      "description": "Top-level content is an array containing header plus data rows.",
+      "details": {
+        "total_array_elements": 3223
+      }
+    },
+    "header_matches_expected": {
+      "status": "PASS",
+      "description": "Header matches exactly, in order: NAME, B28002_001E, B28002_001M, B28002_007E, B28002_007M, state, county",
+      "header": [
+        "NAME",
+        "B28002_001E",
+        "B28002_001M",
+        "B28002_007E",
+        "B28002_007M",
+        "state",
+        "county"
+      ]
+    },
+    "record_field_counts_valid": {
+      "status": "PASS",
+      "description": "Every data record has exactly seven fields.",
+      "malformed_count": 0
+    },
+    "geography_name_valid": {
+      "status": "PASS",
+      "description": "NAME is a nonempty string for every record.",
+      "empty_name_count": 0
+    },
+    "fips_format_valid": {
+      "status": "PASS",
+      "description": "state is 2 digits and county is 3 digits, preserving leading zeros.",
+      "invalid_count": 0
+    },
+    "geography_keys_unique": {
+      "status": "PASS",
+      "description": "State+county FIPS keys are unique across all records.",
+      "duplicate_count": 0,
+      "unique_key_count": 3222
+    },
+    "numeric_fields_parse_integers": {
+      "status": "PASS",
+      "description": "All four estimate/MOE fields parse as numeric integers.",
+      "unparsable_count": 0,
+      "blank_count": 0
+    },
+    "numeric_values_nonnegative": {
+      "status": "PASS",
+      "description": "All count estimates and margins of error must be nonnegative.",
+      "negative_count": 0
+    },
+    "broadband_estimate_within_total": {
+      "status": "PASS",
+      "description": "B28002_007E (broadband estimate) must not exceed B28002_001E (total households).",
+      "violation_count": 0
+    }
+  },
+  "review_flags": {
+    "county_record_count_review": {
+      "status": "REVIEW",
+      "description": "Report deviations from approximately 3,000 county-equivalent records for review.",
+      "actual_data_rows": 3222,
+      "approximate_baseline": 3000,
+      "deviation_from_baseline": 222,
+      "notes": "Observed 3222 data rows. Standard 5-Year ACS county coverage spans 50 US states (3,143 counties/equivalents, adjusted to 3,144 with Connecticut's 9 planning regions replacing 8 counties) + DC (1) + Puerto Rico (78 municipios), totalling 3,222 geographic entities across 52 state FIPS codes. Coverage is consistent with comprehensive ACS county geography."
+    }
+  },
+  "summary_metrics": {
+    "total_data_rows": 3222,
+    "unique_geography_keys": 3222,
+    "unique_state_codes": 52,
+    "duplicate_keys": 0,
+    "malformed_records": 0,
+    "blank_values": 0,
+    "unparsable_values": 0,
+    "negative_values": 0,
+    "invalid_estimate_relationships": 0,
+    "all_hard_checks_passed": true,
+    "field_statistics": {
+      "B28002_001E": {
+        "min": 27,
+        "max": 3416449,
+        "zero_count": 0,
+        "parsed_count": 3222
+      },
+      "B28002_001M": {
+        "min": 24,
+        "max": 5011,
+        "zero_count": 0,
+        "parsed_count": 3222
+      },
+      "B28002_007E": {
+        "min": 17,
+        "max": 2673498,
+        "zero_count": 0,
+        "parsed_count": 3222
+      },
+      "B28002_007M": {
+        "min": 7,
+        "max": 8688,
+        "zero_count": 0,
+        "parsed_count": 3222
+      }
+    }
+  }
+}
