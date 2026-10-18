@@ -1,0 +1,604 @@
+{
+  "metadata": {
+    "audit_timestamp_utc": "2026-10-18T11:43:42.262182+00:00",
+    "working_research_question": "How sensitive is the county-level relationship between reported fixed broadband availability and household-reported wired broadband subscription to the availability-speed definition, socioeconomic context, and ACS sampling uncertainty?",
+    "observational_study_scope": "Observational county-level study. No causal claims or direct household-level availability-adoption gap claims.",
+    "temporal_mismatch_disclosure": "Census ACS 5-year estimates pool 2020-2024 survey responses. FCC National Broadband Map data is a point-in-time administrative snapshot as of Dec 30, 2025. The FCC file post-dates the ACS window by 12 months."
+  },
+  "validator_execution_status": "SUCCESS",
+  "overall_feasibility_status": "PASS",
+  "overall_feasibility_status_rationale": "All mandatory input source-integrity checks passed, ACS uncertainty calculation verified, FCC threshold comparison monotonicity verified; alternate-speed input feasibility is complete, while empirical relationship sensitivity analysis has not yet been performed.",
+  "mandatory_input_checks": {
+    "fcc_100_20_integrity": "PASS",
+    "fcc_25_3_integrity": "PASS",
+    "census_b28002_integrity": "PASS",
+    "census_context_integrity": "PASS",
+    "acs_uncertainty_calculation": "PASS",
+    "fcc_geography_alignment": "PASS",
+    "fcc_unit_counts_alignment": "PASS",
+    "fcc_coverage_monotonicity": "PASS"
+  },
+  "file_hashes_and_provenance": {
+    "notice": "File hashes (SHA-256) verify bit-level file integrity and local reproducibility; they do not represent digital signatures or independent proof of data authenticity or vintage.",
+    "records": [
+      {
+        "dataset": "FCC Availability (100/20)",
+        "filepath": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_100_20_D25.csv",
+        "format": "CSV",
+        "records": 3234,
+        "sha256": "de0058de57e6484519ff180fd32913ffb8950a2c22632e8fdd4edfa30430768a",
+        "provenance": {
+          "source_platform": "FCC National Broadband Map, Area Comparison, Fixed Broadband",
+          "geography_type": "County",
+          "data_type": "Total",
+          "service": "Residential",
+          "technology": "All Wired",
+          "speed_threshold": "at least 100 Mbps download / 20 Mbps upload (100/20 Mbps)",
+          "data_as_of": "Dec 30, 2025",
+          "provenance_note": "Recorded as user-confirmed export settings from the FCC interface, not embedded metadata within the CSV. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+        }
+      },
+      {
+        "dataset": "FCC Availability (25/3)",
+        "filepath": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_25_3_D25.csv",
+        "format": "CSV",
+        "records": 3234,
+        "sha256": "a6649e1dbbbdb4a3d118714115c08bad825694b328362dfb3d0740b0452f1f27",
+        "provenance": {
+          "source_platform": "FCC National Broadband Map, Area Comparison, Fixed Broadband",
+          "geography_type": "County",
+          "data_type": "Total",
+          "service": "Residential",
+          "technology": "All Wired",
+          "speed_threshold": "at least 25 Mbps download / 3 Mbps upload (25/3 Mbps)",
+          "data_as_of": "Dec 30, 2025",
+          "provenance_note": "Recorded as user-confirmed export settings from the FCC interface, not embedded metadata within the CSV. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+        }
+      },
+      {
+        "dataset": "Census B28002",
+        "filepath": "data/raw/acs_b28002_2024_county.json",
+        "format": "JSON",
+        "records": 3222,
+        "sha256": "d2fbb6ab8e9dee59a3a2d747dd43a4f27d48a321855495ee3fe7d0ed4c10d9b7",
+        "provenance": {
+          "source_platform": "U.S. Census API, 2024 ACS 5-Year Detailed Tables",
+          "table": "B28002",
+          "vintage": "2020-2024 (5-Year Pooled)",
+          "geography": "County",
+          "provenance_note": "Retrieved via Census Data API for county geography. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+        }
+      },
+      {
+        "dataset": "Census Context (S1701/S1501)",
+        "filepath": "data/raw/acs_context_2024_county.json",
+        "format": "JSON",
+        "records": 3222,
+        "sha256": "ad6dba9bbf68a2b4d28593f4b600559195bec3bd20943a70c5f3c51db2a65c82",
+        "provenance": {
+          "source_platform": "U.S. Census API, 2024 ACS 5-Year Subject Tables",
+          "tables": "S1701 (Poverty), S1501 (Educational Attainment)",
+          "vintage": "2020-2024 (5-Year Pooled)",
+          "geography": "County",
+          "provenance_note": "Retrieved via Census Subject Tables API for county geography. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+        }
+      }
+    ]
+  },
+  "validation_summary": {
+    "fcc_100_20": {
+      "filepath": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_100_20_D25.csv",
+      "speed_tier": "100/20 Mbps",
+      "status": "PASS",
+      "size_bytes": 163568,
+      "sha256": "de0058de57e6484519ff180fd32913ffb8950a2c22632e8fdd4edfa30430768a",
+      "total_rows": 3234,
+      "unique_fips": 3234,
+      "checks": {
+        "header_schema": "PASS",
+        "nonempty_records": "PASS",
+        "row_widths_valid": "PASS",
+        "fips_format_valid": "PASS",
+        "geography_desc_nonempty": "PASS",
+        "unique_keys": "PASS",
+        "coverage_range_valid": "PASS",
+        "unit_counts_valid_when_present": "PASS"
+      },
+      "coverage_summary": {
+        "count": 3234,
+        "min": 0.0,
+        "q25": 0.733362,
+        "median": 0.880269,
+        "q75": 0.955619,
+        "max": 1.0,
+        "mean": 0.813841,
+        "zero_count": 10,
+        "one_count": 55
+      },
+      "provenance": {
+        "source_platform": "FCC National Broadband Map, Area Comparison, Fixed Broadband",
+        "geography_type": "County",
+        "data_type": "Total",
+        "service": "Residential",
+        "technology": "All Wired",
+        "speed_threshold": "at least 100 Mbps download / 20 Mbps upload (100/20 Mbps)",
+        "data_as_of": "Dec 30, 2025",
+        "provenance_note": "Recorded as user-confirmed export settings from the FCC interface, not embedded metadata within the CSV. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+      }
+    },
+    "fcc_25_3": {
+      "filepath": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_25_3_D25.csv",
+      "speed_tier": "25/3 Mbps",
+      "status": "PASS",
+      "size_bytes": 163568,
+      "sha256": "a6649e1dbbbdb4a3d118714115c08bad825694b328362dfb3d0740b0452f1f27",
+      "total_rows": 3234,
+      "unique_fips": 3234,
+      "checks": {
+        "header_schema": "PASS",
+        "nonempty_records": "PASS",
+        "row_widths_valid": "PASS",
+        "fips_format_valid": "PASS",
+        "geography_desc_nonempty": "PASS",
+        "unique_keys": "PASS",
+        "coverage_range_valid": "PASS",
+        "unit_counts_valid_when_present": "PASS"
+      },
+      "coverage_summary": {
+        "count": 3234,
+        "min": 0.0,
+        "q25": 0.764748,
+        "median": 0.894337,
+        "q75": 0.960939,
+        "max": 1.0,
+        "mean": 0.834333,
+        "zero_count": 8,
+        "one_count": 57
+      },
+      "provenance": {
+        "source_platform": "FCC National Broadband Map, Area Comparison, Fixed Broadband",
+        "geography_type": "County",
+        "data_type": "Total",
+        "service": "Residential",
+        "technology": "All Wired",
+        "speed_threshold": "at least 25 Mbps download / 3 Mbps upload (25/3 Mbps)",
+        "data_as_of": "Dec 30, 2025",
+        "provenance_note": "Recorded as user-confirmed export settings from the FCC interface, not embedded metadata within the CSV. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+      }
+    },
+    "census_b28002": {
+      "filepath": "data/raw/acs_b28002_2024_county.json",
+      "status": "PASS",
+      "size_bytes": 220007,
+      "sha256": "d2fbb6ab8e9dee59a3a2d747dd43a4f27d48a321855495ee3fe7d0ed4c10d9b7",
+      "total_rows": 3222,
+      "unique_fips": 3222,
+      "checks": {
+        "header_schema": "PASS",
+        "row_widths_valid": "PASS",
+        "fips_format_valid": "PASS",
+        "relational_check_subset": "PASS",
+        "unique_keys": "PASS"
+      },
+      "provenance": {
+        "source_platform": "U.S. Census API, 2024 ACS 5-Year Detailed Tables",
+        "table": "B28002",
+        "vintage": "2020-2024 (5-Year Pooled)",
+        "geography": "County",
+        "provenance_note": "Retrieved via Census Data API for county geography. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+      }
+    },
+    "census_context": {
+      "filepath": "data/raw/acs_context_2024_county.json",
+      "status": "PASS",
+      "size_bytes": 216236,
+      "sha256": "ad6dba9bbf68a2b4d28593f4b600559195bec3bd20943a70c5f3c51db2a65c82",
+      "total_rows": 3222,
+      "unique_fips": 3222,
+      "checks": {
+        "header_schema": "PASS",
+        "row_widths_valid": "PASS",
+        "fips_format_valid": "PASS",
+        "numeric_parsing_valid": "PASS",
+        "unique_keys": "PASS"
+      },
+      "provenance": {
+        "source_platform": "U.S. Census API, 2024 ACS 5-Year Subject Tables",
+        "tables": "S1701 (Poverty), S1501 (Educational Attainment)",
+        "vintage": "2020-2024 (5-Year Pooled)",
+        "geography": "County",
+        "provenance_note": "Retrieved via Census Subject Tables API for county geography. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+      }
+    },
+    "acs_uncertainty_calculation": {
+      "status": "PASS",
+      "checks": {
+        "evaluated_count_matches_expected": "PASS",
+        "zero_denominator_free": "PASS",
+        "numeric_parsing_valid": "PASS",
+        "subscription_rate_proportions_valid": "PASS",
+        "margin_of_error_proportions_valid": "PASS",
+        "fallback_handling_complete": "PASS"
+      },
+      "total_counties_evaluated": 3222,
+      "standard_proportion_count": 3217,
+      "negative_radicand_fallback_count": 5
+    }
+  },
+  "alternate_threshold_validation": {
+    "status": "PASS",
+    "alternate_speed_input_feasibility": "COMPLETE",
+    "empirical_relationship_sensitivity_analysis": "NOT_YET_PERFORMED",
+    "status_distinction_note": "Alternate-speed input feasibility is complete (file validated, aligned, and coverage monotonicity verified). Empirical relationship sensitivity analysis has not yet been performed and will be conducted during subsequent analytical phases; do not infer that the relationship has already been tested at both thresholds.",
+    "provenance": {
+      "source_platform": "FCC National Broadband Map, Area Comparison, Fixed Broadband",
+      "geography_type": "County",
+      "data_type": "Total",
+      "service": "Residential",
+      "technology": "All Wired",
+      "speed_threshold": "at least 25 Mbps download / 3 Mbps upload (25/3 Mbps)",
+      "data_as_of": "Dec 30, 2025",
+      "provenance_note": "Recorded as user-confirmed export settings from the FCC interface, not embedded metadata within the CSV. File hash (SHA-256) verifies bit-level file integrity and local reproducibility; it does not represent a digital signature or independent proof of data authenticity or vintage."
+    },
+    "sha256": "a6649e1dbbbdb4a3d118714115c08bad825694b328362dfb3d0740b0452f1f27",
+    "size_bytes": 163568
+  },
+  "fcc_threshold_comparison": {
+    "status": "PASS",
+    "tolerance": 1e-09,
+    "counts": {
+      "total_shared_entities": 3234,
+      "only_in_100_20": 0,
+      "only_in_25_3": 0,
+      "description_mismatches": 0,
+      "unit_count_mismatches": 0,
+      "higher_25_3_coverage_count": 2585,
+      "equal_coverage_count": 649,
+      "lower_25_3_coverage_count": 0
+    },
+    "coverage_difference_summary": {
+      "min_diff": 0.0,
+      "q25_diff": 0.000199,
+      "median_diff": 0.004575,
+      "q75_diff": 0.019324,
+      "max_diff": 0.987896,
+      "mean_diff": 0.020492
+    },
+    "monotonicity_violations": [],
+    "checks": {
+      "shared_geography_alignment": "PASS",
+      "description_alignment": "PASS",
+      "unit_counts_alignment": "PASS",
+      "coverage_monotonicity": "PASS"
+    }
+  },
+  "socioeconomic_context": {
+    "retrieval_date": "2026-10-18",
+    "api_endpoint": "https://api.census.gov/data/2024/acs/acs5/subject?get=NAME,S1701_C03_001E,S1701_C03_001M,S1501_C02_015E,S1501_C02_015M&for=county:*",
+    "variable_metadata": {
+      "S1701_C03_001E": {
+        "label": "Estimate!!Percent below poverty level!!Population for whom poverty status is determined",
+        "concept": "Poverty Status in the Past 12 Months",
+        "predicate_type": "float",
+        "group": "S1701",
+        "attribute_type": "ESTIMATE"
+      },
+      "S1701_C03_001M": {
+        "label": "Margin of Error!!Percent below poverty level!!Population for whom poverty status is determined",
+        "concept": "Poverty Status in the Past 12 Months",
+        "predicate_type": "float",
+        "group": "S1701",
+        "attribute_type": "MARGIN_OF_ERROR"
+      },
+      "S1501_C02_015E": {
+        "label": "Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher",
+        "concept": "Educational Attainment",
+        "predicate_type": "float",
+        "group": "S1501",
+        "attribute_type": "ESTIMATE"
+      },
+      "S1501_C02_015M": {
+        "label": "Margin of Error!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher",
+        "concept": "Educational Attainment",
+        "predicate_type": "float",
+        "group": "S1501",
+        "attribute_type": "MARGIN_OF_ERROR"
+      }
+    },
+    "summary_statistics": {
+      "S1701_C03_001E": {
+        "count": 3222,
+        "min": 1.4,
+        "q25": 10.1,
+        "median": 13.4,
+        "q75": 17.8,
+        "max": 63.6,
+        "mean": 14.94
+      },
+      "S1701_C03_001M": {
+        "count": 3222,
+        "min": 0.2,
+        "q25": 1.4,
+        "median": 2.3,
+        "q75": 3.4,
+        "max": 21.1,
+        "mean": 2.6
+      },
+      "S1501_C02_015E": {
+        "count": 3222,
+        "min": 0.0,
+        "q25": 17.6,
+        "median": 22.3,
+        "q75": 29.4,
+        "max": 80.5,
+        "mean": 24.7
+      },
+      "S1501_C02_015M": {
+        "count": 3222,
+        "min": 0.2,
+        "q25": 1.5,
+        "median": 2.2,
+        "q75": 3.0,
+        "max": 66.1,
+        "mean": 2.49
+      }
+    }
+  },
+  "geographic_overlap": {
+    "counts": {
+      "fcc_total": 3234,
+      "census_b28002_total": 3222,
+      "census_context_total": 3222,
+      "b28002_and_context_identical_fips": true,
+      "sample_49_states_plus_dc_excluding_ct_pr": 3135,
+      "puerto_rico_municipios": 78,
+      "sample_exact_fips_joined_total": 3213,
+      "connecticut_exact_matches": 0,
+      "fcc_only_total": 21,
+      "census_only_total": 9
+    },
+    "sample_definitions": {
+      "n_3135": "49 states plus Washington, DC, excluding Connecticut and Puerto Rico (N = 3,135). Primary observational study sample.",
+      "n_3213": "Those 3,135 matches plus Puerto Rico's 78 municipios (N = 3,213). Sensitivity check sample.",
+      "connecticut_status": "Excluded from exact-FIPS matching (0 exact matches between 8 legacy counties in FCC and 9 planning regions in 2024 ACS). No crosswalk created."
+    },
+    "fcc_only_details": {
+      "connecticut_legacy_counties": [
+        "09001",
+        "09003",
+        "09005",
+        "09007",
+        "09009",
+        "09011",
+        "09013",
+        "09015"
+      ],
+      "island_territories": [
+        "60010",
+        "60020",
+        "60030",
+        "60040",
+        "60050",
+        "66010",
+        "69085",
+        "69100",
+        "69110",
+        "69120",
+        "78010",
+        "78020",
+        "78030"
+      ]
+    },
+    "census_only_details": {
+      "connecticut_planning_regions": [
+        "09110",
+        "09120",
+        "09130",
+        "09140",
+        "09150",
+        "09160",
+        "09170",
+        "09180",
+        "09190"
+      ]
+    }
+  },
+  "uncertainty_propagation": {
+    "status": "PASS",
+    "checks": {
+      "evaluated_count_matches_expected": "PASS",
+      "zero_denominator_free": "PASS",
+      "numeric_parsing_valid": "PASS",
+      "subscription_rate_proportions_valid": "PASS",
+      "margin_of_error_proportions_valid": "PASS",
+      "fallback_handling_complete": "PASS"
+    },
+    "mathematical_definitions": {
+      "numerator_x": "B28002_007E (Wired broadband subscription count estimate)",
+      "numerator_moe_x": "B28002_007M (Published 90% margin of error of numerator)",
+      "denominator_y": "B28002_001E (Total households estimate)",
+      "denominator_moe_y": "B28002_001M (Published 90% margin of error of denominator)",
+      "rate_proportion": "P = X / Y (scale: [0, 1])",
+      "rate_percentage": "P_pct = P * 100 (scale: [0, 100]%)",
+      "moe_proportion_formula": "MOE(P) = (1 / Y) * sqrt(MOE(X)^2 - P^2 * MOE(Y)^2) [used when radicand >= 0]",
+      "moe_ratio_fallback_formula": "MOE_ratio(P) = (1 / Y) * sqrt(MOE(X)^2 + P^2 * MOE(Y)^2) [used when radicand < 0]",
+      "moe_percentage_points": "MOE_pp = MOE(P) * 100 (expressed in percentage points, pp)"
+    },
+    "citation": "U.S. Census Bureau, 'Understanding and Using American Community Survey Data: What All Data Users Need to Know' (ACS General Handbook, Chapter 8: Calculating Measures of Error for Derived Estimates, 2020/2024)",
+    "total_counties_evaluated": 3222,
+    "zero_denominator_count": 0,
+    "standard_proportion_count": 3217,
+    "negative_radicand_fallback_count": 5,
+    "proportion_scale": {
+      "subscription_rate_proportion": {
+        "count": 3222,
+        "min": 0.1362,
+        "q25": 0.5639,
+        "median": 0.6558,
+        "q75": 0.7315,
+        "max": 0.9471,
+        "mean": 0.6411
+      },
+      "margin_of_error_proportion": {
+        "count": 3222,
+        "min": 0.0023,
+        "q25": 0.019,
+        "median": 0.031,
+        "q75": 0.0436,
+        "max": 0.4882,
+        "mean": 0.0345
+      }
+    },
+    "percentage_scale": {
+      "subscription_rate_percent": {
+        "count": 3222,
+        "min": 13.62,
+        "q25": 56.39,
+        "median": 65.58,
+        "q75": 73.15,
+        "max": 94.71,
+        "mean": 64.11
+      },
+      "margin_of_error_percentage_points": {
+        "count": 3222,
+        "min": 0.23,
+        "q25": 1.9,
+        "median": 3.1,
+        "q75": 4.36,
+        "max": 48.82,
+        "mean": 3.45
+      }
+    },
+    "flagged_cases_ratio_fallback": [
+      {
+        "geography_id": "06055",
+        "name": "Napa County, California",
+        "proportion": 0.773205,
+        "percent": 77.3205,
+        "radicand": -1814361.04,
+        "ratio_fallback_moe_proportion": 0.050736,
+        "ratio_fallback_moe_percentage_points": 5.0736
+      },
+      {
+        "geography_id": "15005",
+        "name": "Kalawao County, Hawaii",
+        "proportion": 0.425,
+        "percent": 42.5,
+        "radicand": -55.04,
+        "ratio_fallback_moe_proportion": 0.309273,
+        "ratio_fallback_moe_percentage_points": 30.9273
+      },
+      {
+        "geography_id": "27069",
+        "name": "Kittson County, Minnesota",
+        "proportion": 0.740135,
+        "percent": 74.0135,
+        "radicand": -4807.88,
+        "ratio_fallback_moe_proportion": 0.072771,
+        "ratio_fallback_moe_percentage_points": 7.2771
+      },
+      {
+        "geography_id": "29063",
+        "name": "DeKalb County, Missouri",
+        "proportion": 0.559486,
+        "percent": 55.9486,
+        "radicand": -123632.61,
+        "ratio_fallback_moe_proportion": 0.132539,
+        "ratio_fallback_moe_percentage_points": 13.2539
+      },
+      {
+        "geography_id": "30009",
+        "name": "Carbon County, Montana",
+        "proportion": 0.495069,
+        "percent": 49.5069,
+        "radicand": -828384.89,
+        "ratio_fallback_moe_proportion": 0.459238,
+        "ratio_fallback_moe_percentage_points": 45.9238
+      }
+    ],
+    "methodological_limitations": [
+      "First-order Taylor series linearization (delta method) approximates the non-linear proportion function around point estimates.",
+      "Pre-tabulated summary tables (B28002) do not publish microdata replicate weights (the 80 successive difference replicate weights) necessary to calculate exact survey covariances.",
+      "Substituting published 90% margins of error directly into the proportion approximation may slightly overestimate or underestimate true sampling error in sparsely sampled rural counties."
+    ]
+  },
+  "status_precedence_tests": [
+    {
+      "case_id": "PRECEDENCE-01",
+      "name": "All source integrity, uncertainty calc, and alternate export checks pass with no unresolved items",
+      "expected_status": "PASS",
+      "actual_status": "PASS",
+      "passed": true,
+      "rationale": "All mandatory input source-integrity checks passed, ACS uncertainty calculation verified, FCC threshold comparison monotonicity verified; alternate-speed input feasibility is complete, while empirical relationship sensitivity analysis has not yet been performed."
+    },
+    {
+      "case_id": "PRECEDENCE-02",
+      "name": "Source integrity check fails (fcc_100_20_integrity: FAIL)",
+      "expected_status": "FAIL",
+      "actual_status": "FAIL",
+      "passed": true,
+      "rationale": "Mandatory integrity/calculation checks failed: fcc_100_20_integrity."
+    },
+    {
+      "case_id": "PRECEDENCE-03",
+      "name": "All checks pass but required item unresolved / alternate incomplete",
+      "expected_status": "REVIEW",
+      "actual_status": "REVIEW",
+      "passed": true,
+      "rationale": "All mandatory input checks passed, but required project items remain unresolved: alternate FCC speed threshold (25/3 Mbps) input feasibility remains incomplete or unresolved; unresolved items: pending_alternate_export."
+    },
+    {
+      "case_id": "PRECEDENCE-04",
+      "name": "All source-integrity and alternate-export checks pass, required ACS uncertainty calculation fails, unresolved items present",
+      "expected_status": "FAIL",
+      "actual_status": "FAIL",
+      "passed": true,
+      "rationale": "Mandatory integrity/calculation checks failed: acs_uncertainty_calculation."
+    },
+    {
+      "case_id": "PRECEDENCE-05",
+      "name": "All source-integrity and alternate-export checks pass, required ACS uncertainty calculation fails, alternate export incomplete and unresolved items present",
+      "expected_status": "FAIL",
+      "actual_status": "FAIL",
+      "passed": true,
+      "rationale": "Mandatory integrity/calculation checks failed: acs_uncertainty_calculation."
+    }
+  ],
+  "methodological_risks_and_decisions": [
+    {
+      "decision_id": "DECISION-01",
+      "title": "Alternate FCC Speed Threshold (25/3 Mbps) Validation & Inclusion",
+      "status": "VALIDATED_AND_RECOMMENDED_FOR_ANALYSIS",
+      "description": "The alternate FCC export (25/3 Mbps, Dec 30, 2025) has been validated independently. All 3,234 county entities align perfectly with the 100/20 export with identical unit counts and descriptions. Coverage monotonicity holds across 100% of counties (2,585 higher, 649 equal within 1e-9 tolerance, 0 lower). Alternate-speed input feasibility is complete; empirical relationship sensitivity analysis has not yet been performed.",
+      "recommended_action": "Authorize inclusion of 25/3 Mbps coverage in subsequent Phase 4 availability-speed sensitivity modeling, satisfying the approved research question's multi-threshold requirement. Do not infer that the actual empirical relationship has already been evaluated at both thresholds."
+    },
+    {
+      "decision_id": "DECISION-02",
+      "title": "Connecticut Geography Policy",
+      "status": "RECOMMENDED_ACTION_DEFINED",
+      "description": "FCC data uses 8 legacy Connecticut counties (09001-09015), whereas 2024 ACS uses 9 planning regions (09110-09190). There are 0 exact FIPS matches.",
+      "recommended_action": "Formally exclude Connecticut (09) from the primary county-level regression/modeling sample (N = 3,135, representing 49 states plus Washington, DC, excluding Connecticut and Puerto Rico). Connecticut remains excluded from exact-FIPS matching; do not create a crosswalk."
+    },
+    {
+      "decision_id": "DECISION-03",
+      "title": "Puerto Rico Geographic Scope Policy",
+      "status": "RECOMMENDED_ACTION_DEFINED",
+      "description": "All 78 Puerto Rico municipios match exactly across FCC and Census. However, PR exhibits distinct macroeconomic conditions and telecommunications regulatory frameworks.",
+      "recommended_action": "Designate the sample of 49 states plus Washington, DC, excluding Connecticut and Puerto Rico (N = 3,135) as the primary study population, and perform an explicit sensitivity check on those 3,135 matches plus Puerto Rico's 78 municipios (N = 3,213)."
+    },
+    {
+      "decision_id": "DECISION-04",
+      "title": "ACS Sampling Uncertainty Weighting Strategy",
+      "status": "RECOMMENDED_ACTION_DEFINED",
+      "description": "Five counties have negative radicands requiring ratio fallback MOE, and small rural counties (e.g. Loving, TX and Kalawao, HI) show substantial sampling variance (MOE > 30 pp).",
+      "recommended_action": "Evaluate whether downstream regression models should utilize Weighted Least Squares (WLS) using inverse-variance weights derived from percentage-point MOE (1 / MOE_pp^2) or household-count weights (B28002_001E) alongside unweighted OLS as a sensitivity check."
+    },
+    {
+      "decision_id": "DECISION-05",
+      "title": "Temporal Lag Methodological Caveat",
+      "status": "DOCUMENTED_AND_DISCLOSED",
+      "description": "ACS estimates describe pooled 2020-2024 multi-year averages, while FCC reflects a point snapshot as of Dec 30, 2025.",
+      "recommended_action": "Explicitly report the 12-month post-period gap in all methodology sections. Do not interpret findings as a concurrent point-in-time equilibrium."
+    }
+  ]
+}

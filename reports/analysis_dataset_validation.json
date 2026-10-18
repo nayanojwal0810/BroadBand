@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "validation_timestamp_utc": "2026-10-18T14:57:28.803197+00:00",
+    "project": "County-Level Broadband Availability and Household Subscription Analysis",
+    "phase": "Phase 4B - Step 1 Analysis Dataset Preparation & Validation",
+    "output_dataset_csv": "data/processed/county_broadband_analysis.csv",
+    "source_inputs": {
+      "fcc_100_20": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_100_20_D25.csv",
+      "fcc_25_3": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_25_3_D25.csv",
+      "census_b28002": "data/raw/acs_b28002_2024_county.json",
+      "census_context": "data/raw/acs_context_2024_county.json"
+    },
+    "governance_notice": "Validation certifies exact dataset alignment, valid numeric bounds, and absence of missing-value imputation. No models or regressions have been estimated."
+  },
+  "dataset_validation_status": "PASS",
+  "sample_summary": {
+    "total_records": 3213,
+    "primary_sample_records": 3135,
+    "puerto_rico_records": 78,
+    "unique_fips": 3213,
+    "duplicate_fips_count": 0
+  },
+  "ratio_fallback_summary": {
+    "count": 5,
+    "fips": [
+      "06055",
+      "15005",
+      "27069",
+      "29063",
+      "30009"
+    ]
+  },
+  "primary_sample_distributions": {
+    "subscription_rate_pct": {
+      "count": 3135,
+      "min": 13.6221,
+      "q25": 56.978,
+      "median": 65.929,
+      "q75": 73.2751,
+      "max": 94.7075,
+      "mean": 64.5021
+    },
+    "subscription_rate_moe_pp": {
+      "count": 3135,
+      "min": 0.2269,
+      "q25": 1.8947,
+      "median": 3.0859,
+      "q75": 4.362,
+      "max": 48.8169,
+      "mean": 3.4463
+    },
+    "avail_100_20_pct": {
+      "count": 3135,
+      "min": 0.0,
+      "q25": 73.1005,
+      "median": 87.6937,
+      "q75": 95.4828,
+      "max": 100.0,
+      "mean": 81.3208
+    },
+    "avail_25_3_pct": {
+      "count": 3135,
+      "min": 0.0,
+      "q25": 75.9525,
+      "median": 89.1324,
+      "q75": 96.0091,
+      "max": 100.0,
+      "mean": 83.2956
+    },
+    "poverty_pct": {
+      "count": 3135,
+      "min": 1.4,
+      "q25": 10.0,
+      "median": 13.2,
+      "q75": 17.4,
+      "max": 57.6,
+      "mean": 14.24
+    },
+    "bachelor_plus_pct": {
+      "count": 3135,
+      "min": 0.0,
+      "q25": 17.5,
+      "median": 22.1,
+      "q75": 29.5,
+      "max": 80.5,
+      "mean": 24.64
+    }
+  },
+  "puerto_rico_distributions": {
+    "subscription_rate_pct": {
+      "count": 78,
+      "min": 21.1832,
+      "q25": 38.5142,
+      "median": 49.3592,
+      "q75": 55.2676,
+      "max": 66.9251,
+      "mean": 46.6192
+    },
+    "subscription_rate_moe_pp": {
+      "count": 78,
+      "min": 1.0037,
+      "q25": 3.0282,
+      "median": 3.7333,
+      "q75": 4.6153,
+      "max": 8.5971,
+      "mean": 3.7612
+    },
+    "avail_100_20_pct": {
+      "count": 78,
+      "min": 0.0738,
+      "q25": 90.813,
+      "median": 94.2575,
+      "q75": 96.5608,
+      "max": 99.2403,
+      "mean": 90.4316
+    },
+    "avail_25_3_pct": {
+      "count": 78,
+      "min": 0.0738,
+      "q25": 90.9557,
+      "median": 94.5506,
+      "q75": 96.9209,
+      "max": 99.2502,
+      "mean": 90.7054
+    },
+    "poverty_pct": {
+      "count": 78,
+      "min": 24.3,
+      "q25": 38.4,
+      "median": 44.1,
+      "q75": 49.6,
+      "max": 63.6,
+      "mean": 43.68
+    },
+    "bachelor_plus_pct": {
+      "count": 78,
+      "min": 12.3,
+      "q25": 22.0,
+      "median": 24.1,
+      "q75": 28.5,
+      "max": 50.5,
+      "mean": 25.28
+    }
+  },
+  "checks": {
+    "expected_total_records_3213": "PASS",
+    "unique_fips_keys_3213": "PASS",
+    "no_duplicate_records": "PASS",
+    "primary_sample_count_3135": "PASS",
+    "puerto_rico_count_78": "PASS",
+    "all_required_variables_present": "PASS",
+    "subscription_rates_in_range": "PASS",
+    "poverty_rates_in_range": "PASS",
+    "bachelor_rates_in_range": "PASS",
+    "avail_100_20_in_range": "PASS",
+    "avail_25_3_in_range": "PASS",
+    "coverage_monotonicity_verified": "PASS",
+    "derived_uncertainty_finite_and_nonnegative": "PASS",
+    "ratio_fallback_count_verified": "PASS"
+  }
+}

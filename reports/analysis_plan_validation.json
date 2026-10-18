@@ -1,0 +1,432 @@
+{
+  "metadata": {
+    "validation_timestamp_utc": "2026-10-18T14:10:08.504681+00:00",
+    "project": "County-Level Broadband Availability and Household Subscription Analysis",
+    "phase": "Phase 4A - Analysis Plan Input, Definition & Methodology Validation",
+    "analysis_plan_document": "docs/analysis_plan.md",
+    "working_research_question": "How sensitive is the county-level relationship between reported fixed broadband availability and household-reported wired broadband subscription to the availability-speed definition, socioeconomic context, and ACS sampling uncertainty?",
+    "study_type": "Observational county-level ecological study",
+    "governance_notice": "This validation certifies data readiness, variable computability, sample alignment, and methodological feasibility only. No models were estimated, regressions run, correlations computed, or bootstrap/Monte Carlo simulations executed."
+  },
+  "methodology_decision_statuses": {
+    "beta_simulation_parameter_feasibility": "PASS",
+    "beta_distribution_shape_diagnostics": "REVIEW",
+    "clustered_inference_specification": "PASS",
+    "wild_cluster_bootstrap_implementation_readiness": "REVIEW",
+    "weighting_decision": "PASS",
+    "overall_phase_4a_plan_status": "REVIEW"
+  },
+  "summary_of_checks": {
+    "check_1_inputs_and_audits": "PASS",
+    "check_2_schema_and_columns": "PASS",
+    "check_3_outcome_rate_computation": "PASS",
+    "check_4_socioeconomic_controls_scale": "PASS",
+    "check_5_sample_reproducibility": "PASS",
+    "check_6_fcc_predictors_scaling": "PASS",
+    "check_7_model_specifications_alignment": "PASS",
+    "check_8_uncertainty_specification": "PASS",
+    "check_9_beta_simulation_feasibility": "PASS",
+    "check_9b_beta_shape_diagnostics": "REVIEW",
+    "check_10_inference_specification": "PASS",
+    "check_10b_bootstrap_local_readiness": "REVIEW",
+    "check_11_weighting_specification": "PASS"
+  },
+  "detailed_check_results": {
+    "check_1_inputs_and_audits": {
+      "status": "PASS",
+      "files_exist": {
+        "fcc_100_20": true,
+        "fcc_25_3": true,
+        "census_b28002": true,
+        "census_context": true
+      },
+      "audit_statuses": {
+        "census_validation": "PASS",
+        "fcc_source_audit": "PASS",
+        "feasibility_audit": "PASS"
+      },
+      "checks": {
+        "raw_files_exist": "PASS",
+        "source_audits_passed": "PASS"
+      }
+    },
+    "check_2_schema_and_columns": {
+      "status": "PASS",
+      "observed_columns": {
+        "fcc_100_20": [
+          "geography_id",
+          "geography_desc_full",
+          "geography_type_total_units",
+          "data_type_total_units",
+          "percent_coverage"
+        ],
+        "fcc_25_3": [
+          "geography_id",
+          "geography_desc_full",
+          "geography_type_total_units",
+          "data_type_total_units",
+          "percent_coverage"
+        ],
+        "census_b28002": [
+          "NAME",
+          "B28002_001E",
+          "B28002_001M",
+          "B28002_007E",
+          "B28002_007M",
+          "state",
+          "county"
+        ],
+        "census_context": [
+          "NAME",
+          "S1701_C03_001E",
+          "S1701_C03_001M",
+          "S1501_C02_015E",
+          "S1501_C02_015M",
+          "state",
+          "county"
+        ]
+      },
+      "checks": {
+        "fcc_100_20_columns": "PASS",
+        "fcc_25_3_columns": "PASS",
+        "census_b28002_columns": "PASS",
+        "census_context_columns": "PASS"
+      }
+    },
+    "check_3_outcome_rate_computation": {
+      "status": "PASS",
+      "total_evaluated_records": 3222,
+      "zero_denominator_count": 0,
+      "negative_value_count": 0,
+      "relational_violation_count": 0,
+      "unparsable_value_count": 0,
+      "subscription_rate_distribution_pct": {
+        "count": 3222,
+        "min": 13.6221,
+        "q25": 56.3904,
+        "median": 65.5826,
+        "q75": 73.1475,
+        "max": 94.7075,
+        "mean": 64.1137
+      },
+      "checks": {
+        "nonempty_records": "PASS",
+        "zero_denominators_free": "PASS",
+        "negative_values_free": "PASS",
+        "relational_check_subset": "PASS",
+        "rates_in_valid_percentage_range": "PASS"
+      }
+    },
+    "check_4_socioeconomic_controls_scale": {
+      "status": "PASS",
+      "total_evaluated_records": 3222,
+      "special_values_count": 0,
+      "poverty_pct_distribution": {
+        "count": 3222,
+        "min": 1.4,
+        "q25": 10.1,
+        "median": 13.4,
+        "q75": 17.8,
+        "max": 63.6,
+        "mean": 14.94
+      },
+      "poverty_moe_distribution": {
+        "count": 3222,
+        "min": 0.2,
+        "q25": 1.4,
+        "median": 2.3,
+        "q75": 3.4,
+        "max": 21.1,
+        "mean": 2.6
+      },
+      "bachelor_plus_pct_distribution": {
+        "count": 3222,
+        "min": 0.0,
+        "q25": 17.6,
+        "median": 22.3,
+        "q75": 29.4,
+        "max": 80.5,
+        "mean": 24.7
+      },
+      "bachelor_plus_moe_distribution": {
+        "count": 3222,
+        "min": 0.2,
+        "q25": 1.5,
+        "median": 2.2,
+        "q75": 3.0,
+        "max": 66.1,
+        "mean": 2.49
+      },
+      "checks": {
+        "total_records_match_expected": "PASS",
+        "special_values_free": "PASS",
+        "poverty_range_valid_pct": "PASS",
+        "bachelor_range_valid_pct": "PASS",
+        "retains_original_percentage_scale": "PASS"
+      }
+    },
+    "check_5_sample_reproducibility": {
+      "status": "PASS",
+      "sample_counts": {
+        "primary_sample_49_states_plus_dc": 3135,
+        "puerto_rico_municipios": 78,
+        "pr_inclusive_sample_total": 3213,
+        "connecticut_exact_matches": 0,
+        "connecticut_fcc_legacy_counties_excluded": 8,
+        "island_territories_fcc_excluded": 13
+      },
+      "checks": {
+        "primary_sample_count_3135": "PASS",
+        "puerto_rico_municipios_count_78": "PASS",
+        "pr_inclusive_sample_count_3213": "PASS",
+        "connecticut_exact_matches_zero": "PASS",
+        "island_territories_count_13": "PASS"
+      }
+    },
+    "check_6_fcc_predictors_scaling": {
+      "status": "PASS",
+      "primary_sample_evaluated": 3135,
+      "monotonicity_violations": 0,
+      "avail_100_20_pct_distribution": {
+        "count": 3135,
+        "min": 0.0,
+        "q25": 73.1005,
+        "median": 87.6937,
+        "q75": 95.4828,
+        "max": 100.0,
+        "mean": 81.3208
+      },
+      "avail_25_3_pct_distribution": {
+        "count": 3135,
+        "min": 0.0,
+        "q25": 75.9525,
+        "median": 89.1324,
+        "q75": 96.0091,
+        "max": 100.0,
+        "mean": 83.2956
+      },
+      "avail_100_20_10pp_distribution": {
+        "count": 3135,
+        "min": 0.0,
+        "q25": 7.31,
+        "median": 8.7694,
+        "q75": 9.5483,
+        "max": 10.0,
+        "mean": 8.1321
+      },
+      "avail_25_3_10pp_distribution": {
+        "count": 3135,
+        "min": 0.0,
+        "q25": 7.5953,
+        "median": 8.9132,
+        "q75": 9.6009,
+        "max": 10.0,
+        "mean": 8.3296
+      },
+      "checks": {
+        "primary_predictors_present": "PASS",
+        "pr_predictors_present": "PASS",
+        "pct_100_20_in_unit_range": "PASS",
+        "pct_25_3_in_unit_range": "PASS",
+        "ten_pp_scaling_valid": "PASS",
+        "coverage_monotonicity_in_sample": "PASS"
+      }
+    },
+    "check_7_model_specifications_alignment": {
+      "status": "PASS",
+      "model_a_complete_cases": 3135,
+      "model_b_complete_cases": 3135,
+      "primary_state_clusters": 50,
+      "pr_inclusive_clusters": 51,
+      "shared_controls": [
+        "poverty_pct (S1701_C03_001E)",
+        "bachelor_plus_pct (S1501_C02_015E)"
+      ],
+      "shared_outcome": "subscription_rate_pct (100 * B28002_007E / B28002_001E)",
+      "checks": {
+        "model_a_primary_sample_complete": "PASS",
+        "model_b_primary_sample_complete": "PASS",
+        "samples_strictly_identical": "PASS",
+        "state_cluster_count_50": "PASS",
+        "pr_cluster_count_51": "PASS"
+      }
+    },
+    "check_8_uncertainty_specification": {
+      "status": "PASS",
+      "required_formula_fields": [
+        "B28002_001E",
+        "B28002_001M",
+        "B28002_007E",
+        "B28002_007M"
+      ],
+      "ratio_fallback_count": 5,
+      "ratio_fallback_fips": [
+        "06055",
+        "15005",
+        "27069",
+        "29063",
+        "30009"
+      ],
+      "moe_proportion_distribution": {
+        "count": 3222,
+        "min": 0.0023,
+        "q25": 0.019,
+        "median": 0.031,
+        "q75": 0.0436,
+        "max": 0.4882,
+        "mean": 0.0345
+      },
+      "moe_percentage_points_distribution": {
+        "count": 3222,
+        "min": 0.23,
+        "q25": 1.9,
+        "median": 3.1,
+        "q75": 4.36,
+        "max": 48.82,
+        "mean": 3.45
+      },
+      "se_approximation_pp_distribution": {
+        "count": 3222,
+        "min": 0.14,
+        "q25": 1.16,
+        "median": 1.89,
+        "q75": 2.65,
+        "max": 29.68,
+        "mean": 2.1
+      },
+      "checks": {
+        "all_uncertainty_inputs_present": "PASS",
+        "ratio_fallback_cases_match_5": "PASS",
+        "moe_nonnegative_and_finite": "PASS",
+        "se_approximation_valid": "PASS"
+      }
+    },
+    "check_9_beta_simulation_feasibility_and_shapes": {
+      "parameter_feasibility_status": "PASS",
+      "shape_diagnostics_status": "REVIEW",
+      "total_primary_counties": 3135,
+      "feasible_count": 3135,
+      "infeasible_count": 0,
+      "infeasible_details": [],
+      "shape_anomaly_counts": {
+        "alpha_lt_1_count": 1,
+        "beta_lt_1_count": 2,
+        "both_lt_1_count": 1
+      },
+      "shape_anomaly_details": {
+        "both_alpha_and_beta_below_one": [
+          {
+            "geography_id": "48301",
+            "name": "Loving County, Texas",
+            "proportion_p": 0.851852,
+            "standard_error": 0.296759,
+            "variance_V": 0.088066,
+            "max_variance": 0.1262,
+            "variance_ratio": 0.697827,
+            "alpha": 0.3689,
+            "beta": 0.0642,
+            "shape_class": "U_shaped_bimodal_density_asymptotes_at_0_and_1"
+          }
+        ],
+        "beta_below_one_only": [
+          {
+            "geography_id": "48269",
+            "name": "King County, Texas",
+            "proportion_p": 0.882883,
+            "standard_error": 0.110586,
+            "variance_V": 0.012229,
+            "max_variance": 0.103401,
+            "variance_ratio": 0.118271,
+            "alpha": 6.582,
+            "beta": 0.8731,
+            "shape_class": "monotone_increasing_density_asymptote_at_1"
+          }
+        ],
+        "alpha_below_one_only": []
+      },
+      "methodological_shape_implication_notice": "Positive finite parameters establish mathematical feasibility, but do not establish that the distribution is a realistic representation of sampling uncertainty. For Loving County, TX (48301), alpha = 0.3689 < 1 and beta = 0.0642 < 1 produce a strictly U-shaped Beta distribution whose density approaches infinity at 0 and 1 with an interior antimode, rather than clustering around the observed estimate p = 85.19%. This diagnostic is documented for ChatGPT review.",
+      "variance_ratio_distribution": {
+        "count": 3135,
+        "min": 1.1e-05,
+        "q25": 0.000639,
+        "median": 0.001579,
+        "q75": 0.003137,
+        "max": 0.697827,
+        "mean": 0.003061
+      },
+      "max_variance_ratio_observed": 0.697827,
+      "alpha_distribution": {
+        "count": 3135,
+        "min": 0.3689,
+        "q25": 182.4591,
+        "median": 389.431,
+        "q75": 1059.3906,
+        "max": 69978.1934,
+        "mean": 1276.5885
+      },
+      "beta_distribution": {
+        "count": 3135,
+        "min": 0.0642,
+        "q25": 122.4207,
+        "median": 234.5053,
+        "q75": 470.5529,
+        "max": 19446.571,
+        "mean": 450.2944
+      }
+    },
+    "check_10_inference_and_bootstrap_environment": {
+      "clustered_inference_status": "PASS",
+      "wild_cluster_bootstrap_readiness_status": "REVIEW",
+      "primary_inference": {
+        "method": "State-clustered standard errors (CRVE)",
+        "clusters_count": 50,
+        "cluster_variable": "state_fips (FIPS 2-digit prefix)",
+        "finite_sample_adjustment": "G / (G - 1) * (N - 1) / (N - K)"
+      },
+      "puerto_rico_sensitivity_inference": {
+        "method": "State-clustered standard errors with Puerto Rico as discrete cluster",
+        "clusters_count": 51,
+        "puerto_rico_cluster_id": "72 (Cluster 51)"
+      },
+      "heteroskedasticity_diagnostic": {
+        "method": "HC3 robust standard errors (MacKinnon & White 1985)",
+        "purpose": "Diagnose influential observations and residual heteroskedasticity"
+      },
+      "local_environment_inspection": {
+        "r_executable": "NOT_FOUND",
+        "rscript_executable": "NOT_FOUND",
+        "r_fwildclusterboot_available": false,
+        "python_wildboottest_installed": false,
+        "python_pyfixest_installed": false,
+        "python_core_available": {
+          "numpy": true,
+          "scipy": true,
+          "statsmodels": true,
+          "pandas": true
+        },
+        "readiness_verdict": "REVIEW: Neither Rscript/fwildclusterboot nor Python wildboottest is installed in this local execution environment. In accordance with guidelines, local readiness is marked REVIEW rather than PASS based solely on a written specification."
+      },
+      "proposed_bootstrap_specification": {
+        "variant": "WCR11 (Restricted Wild Cluster Bootstrap with standard degrees-of-freedom correction)",
+        "null_hypothesis": "H0: beta = 0 (imposed on availability coefficient)",
+        "auxiliary_weight_distribution": "Webb (2013) 6-point distribution {-sqrt(1.5), -1, -sqrt(0.5), sqrt(0.5), 1, sqrt(1.5)}",
+        "replications_B": 999,
+        "seed": 20261018,
+        "confidence_interval_method": "Test inversion over candidate null grid (MacKinnon & Webb 2017)",
+        "alternative_variants_flagged_for_review": "WCU11 (unrestricted residual bootstrap with percentile-t confidence interval) is flagged for ChatGPT review if test inversion over WCR11 is computationally prohibitive without specialized C/Rust-accelerated wildboottest bindings.",
+        "execution_status": "DOCUMENTED_AS_DIAGNOSTIC_PENDING_CHATGPT_DECISION"
+      }
+    },
+    "check_11_weighting_specification": {
+      "status": "PASS",
+      "primary_analysis": "Unweighted Ordinary Least Squares (OLS)",
+      "uncertainty_simulation_weighting": "No inverse-MOE-squared weighting applied in Monte Carlo perturbation",
+      "population_weighting": "Household-count-weighted WLS (w_i = B28002_001E) deferred as optional population-weighted estimand",
+      "checks": {
+        "primary_unweighted_ols_confirmed": "PASS",
+        "inverse_moe_squared_excluded_from_mc": "PASS",
+        "household_count_wls_deferred": "PASS"
+      }
+    }
+  }
+}

@@ -1,0 +1,961 @@
+{
+  "metadata": {
+    "timestamp_utc": "2026-10-18T14:57:51.689519+00:00",
+    "phase": "Phase 4B - Step 3: Reconcile Baseline Reporting and Test Threshold Sensitivity",
+    "project": "County Broadband Availability and Household Subscription Analysis",
+    "dataset": "data/processed/county_broadband_analysis.csv",
+    "governance_notice": "Observational OLS regression estimates. State-clustered standard errors with finite-sample degrees-of-freedom correction c = [G / (G - 1)] * [(N - 1) / (N - K)] reported as primary inference. HC3 standard errors reported as diagnostic. Formal threshold contrast tested via stacked bivariate OLS with state clustering. No causal claims or individual-level adoption inferences."
+  },
+  "models": {
+    "Model_A1_Primary": {
+      "model_name": "Model A1 (100/20 Mbps Unadjusted)",
+      "sample_description": "Primary Sample (49 States + DC, Excludes CT & PR)",
+      "formula": "subscription_rate_pct ~ avail_100_20_10pp",
+      "sample_size_N": 3135,
+      "parameters_K": 2,
+      "matrix_rank": 2,
+      "rank_deficiency": 0,
+      "r_squared": 0.366288,
+      "adj_r_squared": 0.366086,
+      "f_statistic": 368.9487,
+      "f_pvalue": 1.87443723780857e-24,
+      "rmse": 9.668692,
+      "aic": 23124.7,
+      "bic": 23136.8,
+      "log_likelihood": -11560.35,
+      "clustering": {
+        "cluster_variable": "state_fips",
+        "cluster_count_G": 50,
+        "finite_sample_correction": "c = [G / (G - 1)] * [(N - 1) / (N - K)]",
+        "correction_factor": 1.020734,
+        "df_inference": 49,
+        "min_cluster_size": 1,
+        "max_cluster_size": 254,
+        "mean_cluster_size": 62.7
+      },
+      "coefficients": {
+        "const": {
+          "estimate": 33.335448,
+          "se_clustered": 1.778283,
+          "t_stat_clustered": 18.7459,
+          "p_val_clustered": 5.374021164077971e-24,
+          "ci_95_clustered": [
+            29.761854,
+            36.909042
+          ],
+          "se_hc3": 0.970235,
+          "t_stat_hc3": 34.3581,
+          "p_val_hc3": 1.0650354790362664e-258,
+          "ci_95_hc3": [
+            31.433823,
+            35.237073
+          ],
+          "se_classical": 0.752476,
+          "vif": 1.0
+        },
+        "avail_100_20_10pp": {
+          "estimate": 3.832559,
+          "se_clustered": 0.199529,
+          "t_stat_clustered": 19.208,
+          "p_val_clustered": 1.87443723780857e-24,
+          "ci_95_clustered": [
+            3.431591,
+            4.233527
+          ],
+          "se_hc3": 0.114465,
+          "t_stat_hc3": 33.4824,
+          "p_val_hc3": 8.703983605955285e-246,
+          "ci_95_hc3": [
+            3.608212,
+            4.056906
+          ],
+          "se_classical": 0.090062,
+          "vif": 1.0
+        }
+      },
+      "diagnostics": {
+        "breusch_pagan_stat": 30.5347,
+        "breusch_pagan_pvalue": 3.279540270771959e-08,
+        "jarque_bera_stat": 373.1634,
+        "jarque_bera_pvalue": 9.302384461296863e-82,
+        "residual_skewness": -0.6124,
+        "residual_kurtosis": 4.1647,
+        "max_hat_value": 0.006057,
+        "high_leverage_cutoff": 0.001276,
+        "high_leverage_count": 233,
+        "max_cooks_distance": 0.042688
+      }
+    },
+    "Model_A2_Primary": {
+      "model_name": "Model A2 (100/20 Mbps Adjusted)",
+      "sample_description": "Primary Sample (49 States + DC, Excludes CT & PR)",
+      "formula": "subscription_rate_pct ~ avail_100_20_10pp + poverty_pct + bachelor_plus_pct",
+      "sample_size_N": 3135,
+      "parameters_K": 4,
+      "matrix_rank": 4,
+      "rank_deficiency": 0,
+      "r_squared": 0.596254,
+      "adj_r_squared": 0.595867,
+      "f_statistic": 369.7535,
+      "f_pvalue": 1.2334949694494423e-33,
+      "rmse": 7.719955,
+      "aic": 21715.42,
+      "bic": 21739.62,
+      "log_likelihood": -10853.71,
+      "clustering": {
+        "cluster_variable": "state_fips",
+        "cluster_count_G": 50,
+        "finite_sample_correction": "c = [G / (G - 1)] * [(N - 1) / (N - K)]",
+        "correction_factor": 1.021386,
+        "df_inference": 49,
+        "min_cluster_size": 1,
+        "max_cluster_size": 254,
+        "mean_cluster_size": 62.7
+      },
+      "coefficients": {
+        "const": {
+          "estimate": 34.515733,
+          "se_clustered": 2.226234,
+          "t_stat_clustered": 15.5041,
+          "p_val_clustered": 1.5744751778941248e-20,
+          "ci_95_clustered": [
+            30.041948,
+            38.989518
+          ],
+          "se_hc3": 1.106829,
+          "t_stat_hc3": 31.1844,
+          "p_val_hc3": 1.73662552018844e-213,
+          "ci_95_hc3": [
+            32.346389,
+            36.685077
+          ],
+          "se_classical": 0.825074,
+          "vif": 1.0
+        },
+        "avail_100_20_10pp": {
+          "estimate": 2.987203,
+          "se_clustered": 0.146831,
+          "t_stat_clustered": 20.3445,
+          "p_val_clustered": 1.5250756833326623e-25,
+          "ci_95_clustered": [
+            2.692135,
+            3.28227
+          ],
+          "se_hc3": 0.101679,
+          "t_stat_hc3": 29.3788,
+          "p_val_hc3": 1.025477604356806e-189,
+          "ci_95_hc3": [
+            2.787916,
+            3.18649
+          ],
+          "se_classical": 0.075087,
+          "vif": 1.0903
+        },
+        "poverty_pct": {
+          "estimate": -0.383437,
+          "se_clustered": 0.101566,
+          "t_stat_clustered": -3.7752,
+          "p_val_clustered": 0.0004325396255692589,
+          "ci_95_clustered": [
+            -0.587541,
+            -0.179332
+          ],
+          "se_hc3": 0.037541,
+          "t_stat_hc3": -10.2139,
+          "p_val_hc3": 1.7173652122227462e-24,
+          "ci_95_hc3": [
+            -0.457015,
+            -0.309859
+          ],
+          "se_classical": 0.026118,
+          "vif": 1.2696
+        },
+        "bachelor_plus_pct": {
+          "estimate": 0.452688,
+          "se_clustered": 0.028602,
+          "t_stat_clustered": 15.8272,
+          "p_val_clustered": 6.758055532049289e-21,
+          "ci_95_clustered": [
+            0.39521,
+            0.510166
+          ],
+          "se_hc3": 0.015167,
+          "t_stat_hc3": 29.847,
+          "p_val_hc3": 9.607201457402577e-196,
+          "ci_95_hc3": [
+            0.422961,
+            0.482415
+          ],
+          "se_classical": 0.015688,
+          "vif": 1.3626
+        }
+      },
+      "diagnostics": {
+        "breusch_pagan_stat": 263.2043,
+        "breusch_pagan_pvalue": 9.1126717431855e-57,
+        "jarque_bera_stat": 597.543,
+        "jarque_bera_pvalue": 1.7586794352128562e-130,
+        "residual_skewness": -0.3903,
+        "residual_kurtosis": 4.9912,
+        "max_hat_value": 0.019086,
+        "high_leverage_cutoff": 0.002552,
+        "high_leverage_count": 309,
+        "max_cooks_distance": 0.054833
+      }
+    },
+    "Model_B1_Primary": {
+      "model_name": "Model B1 (25/3 Mbps Unadjusted)",
+      "sample_description": "Primary Sample (49 States + DC, Excludes CT & PR)",
+      "formula": "subscription_rate_pct ~ avail_25_3_10pp",
+      "sample_size_N": 3135,
+      "parameters_K": 2,
+      "matrix_rank": 2,
+      "rank_deficiency": 0,
+      "r_squared": 0.397978,
+      "adj_r_squared": 0.397786,
+      "f_statistic": 452.1719,
+      "f_pvalue": 2.1686018059800322e-26,
+      "rmse": 9.42384,
+      "aic": 22963.88,
+      "bic": 22975.98,
+      "log_likelihood": -11479.94,
+      "clustering": {
+        "cluster_variable": "state_fips",
+        "cluster_count_G": 50,
+        "finite_sample_correction": "c = [G / (G - 1)] * [(N - 1) / (N - K)]",
+        "correction_factor": 1.020734,
+        "df_inference": 49,
+        "min_cluster_size": 1,
+        "max_cluster_size": 254,
+        "mean_cluster_size": 62.7
+      },
+      "coefficients": {
+        "const": {
+          "estimate": 27.652741,
+          "se_clustered": 1.818678,
+          "t_stat_clustered": 15.2049,
+          "p_val_clustered": 3.482402915592218e-20,
+          "ci_95_clustered": [
+            23.997971,
+            31.30751
+          ],
+          "se_hc3": 1.029778,
+          "t_stat_hc3": 26.8531,
+          "p_val_hc3": 7.758057104254989e-159,
+          "ci_95_hc3": [
+            25.634413,
+            29.671069
+          ],
+          "se_classical": 0.827012,
+          "vif": 1.0
+        },
+        "avail_25_3_10pp": {
+          "estimate": 4.423932,
+          "se_clustered": 0.208045,
+          "t_stat_clustered": 21.2643,
+          "p_val_clustered": 2.1686018059799897e-26,
+          "ci_95_clustered": [
+            4.00585,
+            4.842013
+          ],
+          "se_hc3": 0.120128,
+          "t_stat_hc3": 36.827,
+          "p_val_hc3": 6.838629293803226e-297,
+          "ci_95_hc3": [
+            4.188486,
+            4.659377
+          ],
+          "se_classical": 0.097209,
+          "vif": 1.0
+        }
+      },
+      "diagnostics": {
+        "breusch_pagan_stat": 11.5919,
+        "breusch_pagan_pvalue": 0.0006623962117609685,
+        "jarque_bera_stat": 461.8437,
+        "jarque_bera_pvalue": 5.151155471513699e-101,
+        "residual_skewness": -0.672,
+        "residual_kurtosis": 4.315,
+        "max_hat_value": 0.007701,
+        "high_leverage_cutoff": 0.001276,
+        "high_leverage_count": 233,
+        "max_cooks_distance": 0.071043
+      }
+    },
+    "Model_B2_Primary": {
+      "model_name": "Model B2 (25/3 Mbps Adjusted)",
+      "sample_description": "Primary Sample (49 States + DC, Excludes CT & PR)",
+      "formula": "subscription_rate_pct ~ avail_25_3_10pp + poverty_pct + bachelor_plus_pct",
+      "sample_size_N": 3135,
+      "parameters_K": 4,
+      "matrix_rank": 4,
+      "rank_deficiency": 0,
+      "r_squared": 0.616459,
+      "adj_r_squared": 0.616092,
+      "f_statistic": 398.6752,
+      "f_pvalue": 2.1045677527012534e-34,
+      "rmse": 7.524301,
+      "aic": 21554.47,
+      "bic": 21578.67,
+      "log_likelihood": -10773.23,
+      "clustering": {
+        "cluster_variable": "state_fips",
+        "cluster_count_G": 50,
+        "finite_sample_correction": "c = [G / (G - 1)] * [(N - 1) / (N - K)]",
+        "correction_factor": 1.021386,
+        "df_inference": 49,
+        "min_cluster_size": 1,
+        "max_cluster_size": 254,
+        "mean_cluster_size": 62.7
+      },
+      "coefficients": {
+        "const": {
+          "estimate": 30.126427,
+          "se_clustered": 2.244378,
+          "t_stat_clustered": 13.4231,
+          "p_val_clustered": 4.8990722025009104e-18,
+          "ci_95_clustered": [
+            25.61618,
+            34.636673
+          ],
+          "se_hc3": 1.158314,
+          "t_stat_hc3": 26.0089,
+          "p_val_hc3": 3.932471895918159e-149,
+          "ci_95_hc3": [
+            27.856172,
+            32.396681
+          ],
+          "se_classical": 0.85547,
+          "vif": 1.0
+        },
+        "avail_25_3_10pp": {
+          "estimate": 3.478241,
+          "se_clustered": 0.174091,
+          "t_stat_clustered": 19.9795,
+          "p_val_clustered": 3.372450448126847e-25,
+          "ci_95_clustered": [
+            3.128393,
+            3.828089
+          ],
+          "se_hc3": 0.109354,
+          "t_stat_hc3": 31.8072,
+          "p_val_hc3": 5.151417682685497e-222,
+          "ci_95_hc3": [
+            3.263911,
+            3.692571
+          ],
+          "se_classical": 0.081285,
+          "vif": 1.0968
+        },
+        "poverty_pct": {
+          "estimate": -0.3811,
+          "se_clustered": 0.094633,
+          "t_stat_clustered": -4.0271,
+          "p_val_clustered": 0.00019581713655335772,
+          "ci_95_clustered": [
+            -0.571273,
+            -0.190927
+          ],
+          "se_hc3": 0.036356,
+          "t_stat_hc3": -10.4823,
+          "p_val_hc3": 1.041322422150994e-25,
+          "ci_95_hc3": [
+            -0.452357,
+            -0.309843
+          ],
+          "se_classical": 0.025456,
+          "vif": 1.2696
+        },
+        "bachelor_plus_pct": {
+          "estimate": 0.439539,
+          "se_clustered": 0.028386,
+          "t_stat_clustered": 15.4846,
+          "p_val_clustered": 1.6576887412594425e-20,
+          "ci_95_clustered": [
+            0.382496,
+            0.496582
+          ],
+          "se_hc3": 0.014931,
+          "t_stat_hc3": 29.4381,
+          "p_val_hc3": 1.7859246068133806e-190,
+          "ci_95_hc3": [
+            0.410275,
+            0.468803
+          ],
+          "se_classical": 0.015323,
+          "vif": 1.3684
+        }
+      },
+      "diagnostics": {
+        "breusch_pagan_stat": 243.01,
+        "breusch_pagan_pvalue": 2.1260218536387128e-52,
+        "jarque_bera_stat": 720.087,
+        "jarque_bera_pvalue": 4.316080413306376e-157,
+        "residual_skewness": -0.4261,
+        "residual_kurtosis": 5.1878,
+        "max_hat_value": 0.019082,
+        "high_leverage_cutoff": 0.002552,
+        "high_leverage_count": 309,
+        "max_cooks_distance": 0.04842
+      }
+    },
+    "Model_A2_PR": {
+      "model_name": "Model A2-PR (100/20 Mbps Adjusted, PR Sensitivity)",
+      "sample_description": "Puerto Rico Sensitivity Sample (Primary + 78 Municipios)",
+      "formula": "subscription_rate_pct ~ avail_100_20_10pp + poverty_pct + bachelor_plus_pct",
+      "sample_size_N": 3213,
+      "parameters_K": 4,
+      "matrix_rank": 4,
+      "rank_deficiency": 0,
+      "r_squared": 0.607004,
+      "adj_r_squared": 0.606636,
+      "f_statistic": 373.771,
+      "f_pvalue": 3.2075820971360066e-34,
+      "rmse": 7.797209,
+      "aic": 22319.6,
+      "bic": 22343.9,
+      "log_likelihood": -11155.8,
+      "clustering": {
+        "cluster_variable": "state_fips",
+        "cluster_count_G": 51,
+        "finite_sample_correction": "c = [G / (G - 1)] * [(N - 1) / (N - K)]",
+        "correction_factor": 1.020954,
+        "df_inference": 50,
+        "min_cluster_size": 1,
+        "max_cluster_size": 254,
+        "mean_cluster_size": 63.0
+      },
+      "coefficients": {
+        "const": {
+          "estimate": 37.366695,
+          "se_clustered": 2.246513,
+          "t_stat_clustered": 16.6332,
+          "p_val_clustered": 5.088667300362502e-22,
+          "ci_95_clustered": [
+            32.854441,
+            41.878949
+          ],
+          "se_hc3": 0.960538,
+          "t_stat_hc3": 38.9018,
+          "p_val_hc3": 0.0,
+          "ci_95_hc3": [
+            35.484075,
+            39.249315
+          ],
+          "se_classical": 0.740404,
+          "vif": 1.0
+        },
+        "avail_100_20_10pp": {
+          "estimate": 2.969305,
+          "se_clustered": 0.142389,
+          "t_stat_clustered": 20.8534,
+          "p_val_clustered": 2.5508326361948083e-26,
+          "ci_95_clustered": [
+            2.683308,
+            3.255302
+          ],
+          "se_hc3": 0.101098,
+          "t_stat_hc3": 29.3705,
+          "p_val_hc3": 1.3077552457986059e-189,
+          "ci_95_hc3": [
+            2.771156,
+            3.167454
+          ],
+          "se_classical": 0.075316,
+          "vif": 1.094
+        },
+        "poverty_pct": {
+          "estimate": -0.520282,
+          "se_clustered": 0.095754,
+          "t_stat_clustered": -5.4335,
+          "p_val_clustered": 1.6374469341598501e-06,
+          "ci_95_clustered": [
+            -0.71261,
+            -0.327955
+          ],
+          "se_hc3": 0.027016,
+          "t_stat_hc3": -19.2586,
+          "p_val_hc3": 1.194547459495389e-82,
+          "ci_95_hc3": [
+            -0.573232,
+            -0.467333
+          ],
+          "se_classical": 0.019651,
+          "vif": 1.1571
+        },
+        "bachelor_plus_pct": {
+          "estimate": 0.416523,
+          "se_clustered": 0.035713,
+          "t_stat_clustered": 11.6632,
+          "p_val_clustered": 7.077728078794249e-16,
+          "ci_95_clustered": [
+            0.344793,
+            0.488254
+          ],
+          "se_hc3": 0.014454,
+          "t_stat_hc3": 28.8173,
+          "p_val_hc3": 1.3039058574565211e-182,
+          "ci_95_hc3": [
+            0.388194,
+            0.444853
+          ],
+          "se_classical": 0.015148,
+          "vif": 1.2581
+        }
+      },
+      "diagnostics": {
+        "breusch_pagan_stat": 280.936,
+        "breusch_pagan_pvalue": 1.3283447156552646e-60,
+        "jarque_bera_stat": 527.562,
+        "jarque_bera_pvalue": 2.7629556008103814e-115,
+        "residual_skewness": -0.2912,
+        "residual_kurtosis": 4.8978,
+        "max_hat_value": 0.014286,
+        "high_leverage_cutoff": 0.00249,
+        "high_leverage_count": 327,
+        "max_cooks_distance": 0.043538
+      }
+    },
+    "Model_B2_PR": {
+      "model_name": "Model B2-PR (25/3 Mbps Adjusted, PR Sensitivity)",
+      "sample_description": "Puerto Rico Sensitivity Sample (Primary + 78 Municipios)",
+      "formula": "subscription_rate_pct ~ avail_25_3_10pp + poverty_pct + bachelor_plus_pct",
+      "sample_size_N": 3213,
+      "parameters_K": 4,
+      "matrix_rank": 4,
+      "rank_deficiency": 0,
+      "r_squared": 0.626203,
+      "adj_r_squared": 0.625853,
+      "f_statistic": 398.9329,
+      "f_pvalue": 6.739933960010313e-35,
+      "rmse": 7.604367,
+      "aic": 22158.67,
+      "bic": 22182.97,
+      "log_likelihood": -11075.33,
+      "clustering": {
+        "cluster_variable": "state_fips",
+        "cluster_count_G": 51,
+        "finite_sample_correction": "c = [G / (G - 1)] * [(N - 1) / (N - K)]",
+        "correction_factor": 1.020954,
+        "df_inference": 50,
+        "min_cluster_size": 1,
+        "max_cluster_size": 254,
+        "mean_cluster_size": 63.0
+      },
+      "coefficients": {
+        "const": {
+          "estimate": 33.002456,
+          "se_clustered": 2.322317,
+          "t_stat_clustered": 14.211,
+          "p_val_clustered": 3.4478734351594776e-19,
+          "ci_95_clustered": [
+            28.337945,
+            37.666968
+          ],
+          "se_hc3": 1.0216,
+          "t_stat_hc3": 32.3047,
+          "p_val_hc3": 6.012732245041376e-229,
+          "ci_95_hc3": [
+            31.000157,
+            35.004755
+          ],
+          "se_classical": 0.777616,
+          "vif": 1.0
+        },
+        "avail_25_3_10pp": {
+          "estimate": 3.456054,
+          "se_clustered": 0.170725,
+          "t_stat_clustered": 20.2434,
+          "p_val_clustered": 9.646943604757101e-26,
+          "ci_95_clustered": [
+            3.113143,
+            3.798965
+          ],
+          "se_hc3": 0.1084,
+          "t_stat_hc3": 31.8825,
+          "p_val_hc3": 4.670513292570072e-223,
+          "ci_95_hc3": [
+            3.243594,
+            3.668514
+          ],
+          "se_classical": 0.081484,
+          "vif": 1.0997
+        },
+        "poverty_pct": {
+          "estimate": -0.517244,
+          "se_clustered": 0.092929,
+          "t_stat_clustered": -5.566,
+          "p_val_clustered": 1.0258028911232268e-06,
+          "ci_95_clustered": [
+            -0.703898,
+            -0.330591
+          ],
+          "se_hc3": 0.026345,
+          "t_stat_hc3": -19.6336,
+          "p_val_hc3": 7.982784074029072e-86,
+          "ci_95_hc3": [
+            -0.568879,
+            -0.465609
+          ],
+          "se_classical": 0.019158,
+          "vif": 1.1563
+        },
+        "bachelor_plus_pct": {
+          "estimate": 0.403608,
+          "se_clustered": 0.035891,
+          "t_stat_clustered": 11.2454,
+          "p_val_clustered": 2.6762953027767204e-15,
+          "ci_95_clustered": [
+            0.331519,
+            0.475697
+          ],
+          "se_hc3": 0.014266,
+          "t_stat_hc3": 28.2921,
+          "p_val_hc3": 4.324399942153261e-176,
+          "ci_95_hc3": [
+            0.375647,
+            0.431568
+          ],
+          "se_classical": 0.014804,
+          "vif": 1.2633
+        }
+      },
+      "diagnostics": {
+        "breusch_pagan_stat": 261.6209,
+        "breusch_pagan_pvalue": 2.0052426180795506e-56,
+        "jarque_bera_stat": 615.8028,
+        "jarque_bera_pvalue": 1.9059496172322776e-134,
+        "residual_skewness": -0.3208,
+        "residual_kurtosis": 5.0465,
+        "max_hat_value": 0.014303,
+        "high_leverage_cutoff": 0.00249,
+        "high_leverage_count": 333,
+        "max_cooks_distance": 0.038098
+      }
+    }
+  },
+  "contrast_tests": {
+    "primary": {
+      "sample_name": "Primary Sample (49 States + DC, N=3,135)",
+      "sample_size_counties": 3135,
+      "stacked_observations": 6270,
+      "cluster_count_G": 50,
+      "df_inference": 49,
+      "finite_sample_correction_factor": 1.021549,
+      "beta_A_estimate": 2.987203,
+      "beta_B_estimate": 3.478241,
+      "beta_difference": 0.491038,
+      "se_difference": 0.074785,
+      "t_statistic": 6.566,
+      "p_value": 3.120688890281842e-08,
+      "ci_95": [
+        0.340753,
+        0.641324
+      ],
+      "covariance_betaA_betaB": 0.023141,
+      "null_hypothesis": "H0: beta_B (25/3) - beta_A (100/20) = 0",
+      "specification_description": "Stacked bivariate OLS regression with block-diagonal design matrix reproducing Model A2 and Model B2 point estimates, clustered at state level with df = G - 1."
+    },
+    "pr_inclusive": {
+      "sample_name": "Puerto Rico-Inclusive Sample (N=3,213)",
+      "sample_size_counties": 3213,
+      "stacked_observations": 6426,
+      "cluster_count_G": 51,
+      "df_inference": 50,
+      "finite_sample_correction_factor": 1.021112,
+      "beta_A_estimate": 2.969305,
+      "beta_B_estimate": 3.456054,
+      "beta_difference": 0.486749,
+      "se_difference": 0.07428,
+      "t_statistic": 6.5529,
+      "p_value": 3.004519405575022e-08,
+      "ci_95": [
+        0.337554,
+        0.635944
+      ],
+      "covariance_betaA_betaB": 0.021956,
+      "null_hypothesis": "H0: beta_B (25/3) - beta_A (100/20) = 0",
+      "specification_description": "Stacked bivariate OLS regression with block-diagonal design matrix reproducing Model A2 and Model B2 point estimates, clustered at state level with df = G - 1."
+    }
+  },
+  "influence_sensitivity": {
+    "model_A2": {
+      "model_label": "Model A2 (100/20 Adjusted)",
+      "predictor_column": "avail_100_20_10pp",
+      "baseline_beta": 2.987203,
+      "top_10_observations": [
+        {
+          "rank": 1,
+          "geography_id": "46102",
+          "geography_name": "Oglala Lakota County, South Dakota",
+          "state_abbr": "SD",
+          "cooks_distance": 0.054833,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 2.988322,
+          "delta_beta": 0.001119,
+          "pct_change": 0.0375
+        },
+        {
+          "rank": 2,
+          "geography_id": "48301",
+          "geography_name": "Loving County, Texas",
+          "state_abbr": "TX",
+          "cooks_distance": 0.040477,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 2.999044,
+          "delta_beta": 0.011841,
+          "pct_change": 0.3964
+        },
+        {
+          "rank": 3,
+          "geography_id": "46121",
+          "geography_name": "Todd County, South Dakota",
+          "state_abbr": "SD",
+          "cooks_distance": 0.035943,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 2.99383,
+          "delta_beta": 0.006627,
+          "pct_change": 0.2218
+        },
+        {
+          "rank": 4,
+          "geography_id": "46031",
+          "geography_name": "Corson County, South Dakota",
+          "state_abbr": "SD",
+          "cooks_distance": 0.029228,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 2.988213,
+          "delta_beta": 0.00101,
+          "pct_change": 0.0338
+        },
+        {
+          "rank": 5,
+          "geography_id": "02060",
+          "geography_name": "Bristol Bay Borough, Alaska",
+          "state_abbr": "AK",
+          "cooks_distance": 0.02392,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 3.00906,
+          "delta_beta": 0.021857,
+          "pct_change": 0.7317
+        },
+        {
+          "rank": 6,
+          "geography_id": "32009",
+          "geography_name": "Esmeralda County, Nevada",
+          "state_abbr": "NV",
+          "cooks_distance": 0.022067,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 3.008708,
+          "delta_beta": 0.021505,
+          "pct_change": 0.7199
+        },
+        {
+          "rank": 7,
+          "geography_id": "21237",
+          "geography_name": "Wolfe County, Kentucky",
+          "state_abbr": "KY",
+          "cooks_distance": 0.020474,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 2.98,
+          "delta_beta": -0.007202,
+          "pct_change": -0.2411
+        },
+        {
+          "rank": 8,
+          "geography_id": "51045",
+          "geography_name": "Craig County, Virginia",
+          "state_abbr": "VA",
+          "cooks_distance": 0.015541,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 3.004681,
+          "delta_beta": 0.017478,
+          "pct_change": 0.5851
+        },
+        {
+          "rank": 9,
+          "geography_id": "05101",
+          "geography_name": "Newton County, Arkansas",
+          "state_abbr": "AR",
+          "cooks_distance": 0.014899,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 3.00457,
+          "delta_beta": 0.017367,
+          "pct_change": 0.5814
+        },
+        {
+          "rank": 10,
+          "geography_id": "08113",
+          "geography_name": "San Miguel County, Colorado",
+          "state_abbr": "CO",
+          "cooks_distance": 0.014457,
+          "baseline_beta": 2.987203,
+          "leave_one_out_beta": 2.98074,
+          "delta_beta": -0.006463,
+          "pct_change": -0.2164
+        }
+      ],
+      "largest_absolute_change": {
+        "county_fips": "02060",
+        "county_name": "Bristol Bay Borough, Alaska",
+        "delta_beta": 0.021857,
+        "pct_change": 0.7317
+      },
+      "largest_relative_change": {
+        "county_fips": "02060",
+        "county_name": "Bristol Bay Borough, Alaska",
+        "delta_beta": 0.021857,
+        "pct_change": 0.7317
+      }
+    },
+    "model_B2": {
+      "model_label": "Model B2 (25/3 Adjusted)",
+      "predictor_column": "avail_25_3_10pp",
+      "baseline_beta": 3.478241,
+      "top_10_observations": [
+        {
+          "rank": 1,
+          "geography_id": "48301",
+          "geography_name": "Loving County, Texas",
+          "state_abbr": "TX",
+          "cooks_distance": 0.04842,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.493879,
+          "delta_beta": 0.015637,
+          "pct_change": 0.4496
+        },
+        {
+          "rank": 2,
+          "geography_id": "46102",
+          "geography_name": "Oglala Lakota County, South Dakota",
+          "state_abbr": "SD",
+          "cooks_distance": 0.046573,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.477248,
+          "delta_beta": -0.000993,
+          "pct_change": -0.0286
+        },
+        {
+          "rank": 3,
+          "geography_id": "32009",
+          "geography_name": "Esmeralda County, Nevada",
+          "state_abbr": "NV",
+          "cooks_distance": 0.040196,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.509922,
+          "delta_beta": 0.031681,
+          "pct_change": 0.9108
+        },
+        {
+          "rank": 4,
+          "geography_id": "02060",
+          "geography_name": "Bristol Bay Borough, Alaska",
+          "state_abbr": "AK",
+          "cooks_distance": 0.039964,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.509178,
+          "delta_beta": 0.030937,
+          "pct_change": 0.8894
+        },
+        {
+          "rank": 5,
+          "geography_id": "46031",
+          "geography_name": "Corson County, South Dakota",
+          "state_abbr": "SD",
+          "cooks_distance": 0.03284,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.480128,
+          "delta_beta": 0.001887,
+          "pct_change": 0.0543
+        },
+        {
+          "rank": 6,
+          "geography_id": "46121",
+          "geography_name": "Todd County, South Dakota",
+          "state_abbr": "SD",
+          "cooks_distance": 0.024906,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.480973,
+          "delta_beta": 0.002732,
+          "pct_change": 0.0785
+        },
+        {
+          "rank": 7,
+          "geography_id": "28063",
+          "geography_name": "Jefferson County, Mississippi",
+          "state_abbr": "MS",
+          "cooks_distance": 0.023006,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.498385,
+          "delta_beta": 0.020144,
+          "pct_change": 0.5791
+        },
+        {
+          "rank": 8,
+          "geography_id": "32033",
+          "geography_name": "White Pine County, Nevada",
+          "state_abbr": "NV",
+          "cooks_distance": 0.022972,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.500205,
+          "delta_beta": 0.021964,
+          "pct_change": 0.6315
+        },
+        {
+          "rank": 9,
+          "geography_id": "21237",
+          "geography_name": "Wolfe County, Kentucky",
+          "state_abbr": "KY",
+          "cooks_distance": 0.020871,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.470277,
+          "delta_beta": -0.007964,
+          "pct_change": -0.229
+        },
+        {
+          "rank": 10,
+          "geography_id": "32011",
+          "geography_name": "Eureka County, Nevada",
+          "state_abbr": "NV",
+          "cooks_distance": 0.020481,
+          "baseline_beta": 3.478241,
+          "leave_one_out_beta": 3.499644,
+          "delta_beta": 0.021402,
+          "pct_change": 0.6153
+        }
+      ],
+      "largest_absolute_change": {
+        "county_fips": "32009",
+        "county_name": "Esmeralda County, Nevada",
+        "delta_beta": 0.031681,
+        "pct_change": 0.9108
+      },
+      "largest_relative_change": {
+        "county_fips": "32009",
+        "county_name": "Esmeralda County, Nevada",
+        "delta_beta": 0.031681,
+        "pct_change": 0.9108
+      }
+    }
+  },
+  "loving_county_reconciled_metrics": {
+    "geography_id": "48301",
+    "geography_name": "Loving County, Texas",
+    "total_households_estimate": 27,
+    "total_households_moe": 29,
+    "broadband_subscription_estimate": 23,
+    "broadband_subscription_moe": 28,
+    "subscription_proportion": "23/27 (~0.851852)",
+    "subscription_rate_pct": 85.185185,
+    "derived_moe_pp": 48.816869,
+    "approximate_se": 0.296759,
+    "moment_matched_alpha": 0.3689,
+    "moment_matched_beta": 0.0642,
+    "density_implication": "Strictly U-shaped Beta density with interior antimode, asymptotes at 0 and 1"
+  },
+  "deferred_methods": {
+    "beta_monte_carlo_simulation": "DEFERRED",
+    "wild_cluster_bootstrap": "DEFERRED",
+    "weighting_procedure": "DEFERRED (Unweighted OLS evaluated)"
+  }
+}
