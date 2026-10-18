@@ -1,8 +1,8 @@
 # Descriptive and Exploratory Analysis: County Broadband Availability and Household Subscription
 
-**Phase:** Phase 4B — Step 1: Prepare the Analysis Dataset and Exploratory Results  
-**Repository:** `D:/BroadBand`  
-**Generated:** 2026-10-18 14:09:56 UTC  
+**Phase:** Phase 4B — Step 1: Prepare the Analysis Dataset and Exploratory Results<br>
+**Repository:** `nayanojwal0810/BroadBand`<br>
+**Generated:** 2026-10-18 15:54:46 UTC<br>
 **Status:** Descriptive & Exploratory Analysis Complete (Governance Compliant)
 
 ---
@@ -14,7 +14,8 @@ This report presents the descriptive statistics and exploratory data visualizati
 ### Strict Methodological Governance Notice
 In accordance with Gate Zero, Phase 3, Phase 4A, and Phase 4B project directives:
 1. **No Regression Estimation:** No Ordinary Least Squares (OLS), Weighted Least Squares (WLS), or multivariable regression models have been fitted.
-2. **No Correlation Quantification:** No Pearson product-moment ($r$), Spearman rank ($ho$), or related bivariate correlation coefficients have been calculated or reported.
+2. **No Correlation Quantification:** No Pearson product-moment ($r$), Spearman rank ($
+ho$), or related bivariate correlation coefficients have been calculated or reported.
 3. **No P-Values or Model Metrics:** No statistical hypothesis testing, $p$-values, $R^2$, or goodness-of-fit metrics are evaluated.
 4. **No Causal or Ecological Claims:** County-level aggregates are presented purely as observational ecological patterns. They do not measure individual household decision-making, and differences between aggregate provider availability and aggregate household subscription are not characterized as an individual "availability–adoption gap."
 5. **No Empirical Sensitivity Determinations:** This report does not claim to have measured the empirical sensitivity of the availability–subscription relationship; that determination is reserved for the pre-specified multivariable model comparisons.

@@ -1,0 +1,116 @@
+{
+  "config": {
+    "random_seed": 20261018,
+    "replicates": 1000,
+    "sample_size_counties": 3135,
+    "outcome_variable": "subscription_rate_pct",
+    "uncertainty_measure": "subscription_rate_se_approx_pp",
+    "distribution_family": "Moment-matched Beta(alpha_i, beta_i)"
+  },
+  "baseline_estimates": {
+    "model_A2_beta_100_20": 2.987203,
+    "model_B2_beta_25_3": 3.478241,
+    "threshold_difference_B_minus_A": 0.491038
+  },
+  "scenario_1_primary": {
+    "description": "Primary simulation: all 3,135 counties simulated from their Beta distributions, including Loving County TX with its U-shaped density.",
+    "availability_slope_A2_100_20": {
+      "baseline_point_estimate": 2.987203,
+      "simulation_mean": 2.984348,
+      "simulation_std": 0.036485,
+      "simulation_median": 2.984882,
+      "percentile_2_5": 2.913037,
+      "percentile_97_5": 3.059393,
+      "empirical_95_width": 0.146356,
+      "min": 2.872423,
+      "max": 3.106878
+    },
+    "availability_slope_B2_25_3": {
+      "baseline_point_estimate": 3.478241,
+      "simulation_mean": 3.475323,
+      "simulation_std": 0.041554,
+      "simulation_median": 3.474183,
+      "percentile_2_5": 3.392201,
+      "percentile_97_5": 3.563414,
+      "empirical_95_width": 0.171213,
+      "min": 3.350852,
+      "max": 3.618006
+    },
+    "threshold_contrast_diff": {
+      "baseline_point_estimate": 0.491038,
+      "simulation_mean": 0.490975,
+      "simulation_std": 0.010456,
+      "simulation_median": 0.490824,
+      "percentile_2_5": 0.471314,
+      "percentile_97_5": 0.511522,
+      "empirical_95_width": 0.040207,
+      "min": 0.458398,
+      "max": 0.523231
+    },
+    "proportion_diff_positive": 1.0
+  },
+  "scenario_2_loving_point_held": {
+    "description": "Sensitivity scenario: Loving County TX held fixed at observed point estimate (85.19%), while other 3,134 counties simulated from Beta draws.",
+    "availability_slope_A2_100_20": {
+      "baseline_point_estimate": 2.987203,
+      "simulation_mean": 2.984517,
+      "simulation_std": 0.035508,
+      "simulation_median": 2.984906,
+      "percentile_2_5": 2.91604,
+      "percentile_97_5": 3.056837,
+      "empirical_95_width": 0.140797,
+      "min": 2.875369,
+      "max": 3.110742
+    },
+    "availability_slope_B2_25_3": {
+      "baseline_point_estimate": 3.478241,
+      "simulation_mean": 3.475538,
+      "simulation_std": 0.040294,
+      "simulation_median": 3.475731,
+      "percentile_2_5": 3.39519,
+      "percentile_97_5": 3.559765,
+      "empirical_95_width": 0.164575,
+      "min": 3.356138,
+      "max": 3.622903
+    },
+    "threshold_contrast_diff": {
+      "baseline_point_estimate": 0.491038,
+      "simulation_mean": 0.491021,
+      "simulation_std": 0.010314,
+      "simulation_median": 0.490896,
+      "percentile_2_5": 0.471199,
+      "percentile_97_5": 0.510791,
+      "empirical_95_width": 0.039592,
+      "min": 0.459503,
+      "max": 0.523669
+    },
+    "proportion_diff_positive": 1.0
+  },
+  "loving_county_diagnostics": {
+    "geography_id": "48301",
+    "geography_name": "Loving County, Texas",
+    "observed_point_estimate_pct": 85.185185,
+    "alpha": 0.368869,
+    "beta": 0.064151,
+    "density_classification": "Strictly U-shaped (interior antimode, asymptotes at 0 and 1)",
+    "simulation_draws_mean_pct": 85.785745,
+    "simulation_draws_median_pct": 99.991051,
+    "percentile_2_5_pct": 1.051073,
+    "percentile_97_5_pct": 100.0,
+    "pct_draws_below_50": 13.3,
+    "pct_draws_above_90": 77.0
+  },
+  "diagnostics": {
+    "counties_evaluated": 3135,
+    "feasible_beta_count": 3135,
+    "infeasible_beta_count": 0,
+    "unimodal_count": 3133,
+    "u_shaped_count": 1,
+    "monotone_increasing_count": 1,
+    "monotone_decreasing_count": 0,
+    "min_alpha": 0.36886894364380235,
+    "max_alpha": 69977.65772257232,
+    "min_beta": 0.06415112157505269,
+    "max_beta": 19446.42249713192
+  }
+}

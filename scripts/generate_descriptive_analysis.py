@@ -345,9 +345,9 @@ def generate_markdown_report(
 
     md = f"""# Descriptive and Exploratory Analysis: County Broadband Availability and Household Subscription
 
-**Phase:** Phase 4B — Step 1: Prepare the Analysis Dataset and Exploratory Results  
-**Repository:** `D:/BroadBand`  
-**Generated:** {timestamp_utc}  
+**Phase:** Phase 4B — Step 1: Prepare the Analysis Dataset and Exploratory Results<br>
+**Repository:** `nayanojwal0810/BroadBand`<br>
+**Generated:** {timestamp_utc}<br>
 **Status:** Descriptive & Exploratory Analysis Complete (Governance Compliant)
 
 ---

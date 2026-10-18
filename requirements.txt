@@ -1,0 +1,8 @@
+# Broadband Project Python Dependencies
+# Tested on Python 3.13 (compatible with Python >= 3.10)
+
+pandas>=2.2.0
+numpy>=2.0.0
+scipy>=1.14.0
+statsmodels>=0.14.0
+matplotlib>=3.9.0

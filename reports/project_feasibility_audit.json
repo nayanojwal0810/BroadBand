@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "audit_timestamp_utc": "2026-10-18T11:43:42.262182+00:00",
+    "audit_timestamp_utc": "2026-10-18T15:50:01.375722+00:00",
     "working_research_question": "How sensitive is the county-level relationship between reported fixed broadband availability and household-reported wired broadband subscription to the availability-speed definition, socioeconomic context, and ACS sampling uncertainty?",
     "observational_study_scope": "Observational county-level study. No causal claims or direct household-level availability-adoption gap claims.",
     "temporal_mismatch_disclosure": "Census ACS 5-year estimates pool 2020-2024 survey responses. FCC National Broadband Map data is a point-in-time administrative snapshot as of Dec 30, 2025. The FCC file post-dates the ACS window by 12 months."

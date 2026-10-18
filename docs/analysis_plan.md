@@ -1,9 +1,9 @@
 # Phase 4 Analysis Plan: County-Level Fixed Broadband Availability and Household Subscription
 
-**Document Version:** 1.2  
-**Date:** October 18, 2026  
-**Status:** Methodology-Only Review Complete; Shape Diagnostics & Bootstrap Execution Route Under Review  
-**Repository:** `D:\BroadBand`  
+**Document Version:** 1.3
+**Date:** October 18, 2026
+**Status:** Baseline OLS, Diagnostics, Threshold Contrast & ACS Outcome-Uncertainty Propagation Complete; Wild Cluster Bootstrap Deferred
+**Repository:** `nayanojwal0810/BroadBand`
 **Study Scope:** Observational County-Level Ecological Study
 
 ---
@@ -214,7 +214,7 @@ An explicit shape diagnostic across all 3,135 primary-sample counties reveals:
 - For 3,133 of the 3,135 counties (99.94%), $\alpha > 1$ and $\beta > 1$, producing standard **unimodal, bell-shaped** distributions centered near $p_i$.
 - In **Loving County, TX** (`48301`), having **both $\alpha < 1$ and $\beta < 1$** creates a **U-shaped density**. The probability density function $f(x) \propto x^{\alpha - 1} (1-x)^{\beta - 1}$ approaches infinity as $x \to 0$ and $x \to 1$. Rather than clustering around the point estimate of 85.19%, individual draws will tend to polarize near 0 or 1.
 - This behavior illustrates that moment-matching with very large margins of error (loving County has only 27 households in ACS B28002) can distort the qualitative shape of sampling error.
-- **Review Caveat:** These diagnostics are documented for ChatGPT review. The Beta simulation remains unexecuted pending final methodological instructions.
+- **Execution & Sensitivity Resolution:** The moment-matched Beta simulation was executed with $M = 1,000$ Monte Carlo replicates (seed `20261018`). In the primary specification, Loving County's mathematically valid Beta parameters ($\alpha \approx 0.3689, \beta \approx 0.0642$) are retained. In a parallel sensitivity scenario, Loving County's outcome is held fixed at its observed point estimate ($85.19\%$). Comparison reveals that simulating Loving County's outcome has virtually zero aggregate influence on regression slopes or the threshold contrast (see `reports/uncertainty_simulation_results.md`).
 
 ---
 
@@ -242,17 +242,19 @@ All reports and subsequent manuscripts must disclose the following structural da
 ### Weighting Decision
 - **Primary Analysis:** **Unweighted OLS** is maintained as the primary estimand.
 - **Uncertainty Check:** Inverse-MOE-squared weighting ($1 / \mathrm{MOE}_{\text{pp}}^2$) is **not** added to the Monte Carlo uncertainty simulation.
-- **Population Weighting:** Household-count-weighted WLS ($w_i = \text{B28002\_001E}_i$) represents an optional population-weighted county-level estimand. It is formally **deferred** and is not required for the initial Phase 4 analysis.
+- **Population Weighting:** Household-count-weighted WLS ($w_i = \text{B28002\_001E}_i$) represents an optional population-weighted county-level estimand. It remains formally **deferred**.
 
-### Pre-Specified Robustness Checks Summary
+### Robustness Checks Execution Status Summary
 1. **Alternate Speed Benchmark:**
-   - Compare Model A (100/20 Mbps) against Model B (25/3 Mbps) on identical samples and controls.
+   - **Status:** **COMPLETE**. Models A1/A2 (100/20 Mbps) and B1/B2 (25/3 Mbps) estimated on identical primary ($N = 3,135$) and PR sensitivity ($N = 3,213$) samples. Difference $\hat{\beta}_B - \hat{\beta}_A = +0.4910$ pp ($t = 4.96, p < 0.0001$). Documented in `reports/baseline_model_results.md`.
 2. **Geographic Scope Sensitivity (Puerto Rico):**
-   - Re-estimate Models A and B on the expanded sample of $N = 3,213$ counties (adding Puerto Rico's 78 municipios as Cluster 51).
+   - **Status:** **COMPLETE**. Re-estimated on $N = 3,213$ counties (Puerto Rico as Cluster 51). Model A2 availability coefficient is $+2.8596$ pp (vs $+2.9872$ pp in primary). Documented in `reports/baseline_model_results.md`.
 3. **Socioeconomic Control Impact:**
-   - Estimate bivariate specifications ($\text{subscription\_rate\_pct}_i = \alpha + \beta \, \text{avail\_10pp}_i + \varepsilon_i$) for both thresholds to evaluate how much omitted socioeconomic context shifts the estimated availability coefficient.
+   - **Status:** **COMPLETE**. Bivariate vs. multivariable models evaluated. Omitting poverty and education attenuates availability coefficients by $\approx 47\%$ to $50\%$. Documented in `reports/baseline_model_results.md`.
 4. **Sampling Uncertainty Propagation:**
-   - Evaluate the empirical distribution of availability coefficients ($\hat{\beta}_A^{(s)}, \hat{\beta}_B^{(s)}$) across $S = 1,000$ paired moment-matched Beta Monte Carlo draws (subject to ChatGPT resolution of shape diagnostics).
+   - **Status:** **COMPLETE**. Evaluated across $M = 1,000$ paired moment-matched Beta Monte Carlo draws (seed `20261018`) for Models A2 and B2, including primary and Loving-fixed sensitivity scenarios. Documented in `reports/uncertainty_simulation_results.md`.
+5. **Wild Cluster Bootstrap:**
+   - **Status:** **DEFERRED**. Preserved as a future methodological refinement; not executed in current phase.
 
 ---
 
@@ -260,12 +262,14 @@ All reports and subsequent manuscripts must disclose the following structural da
 
 | Methodology Component | Decision / Specification | Status | Review Notes |
 | :--- | :--- | :---: | :--- |
-| **Beta Simulation Parameter Feasibility** | 3,135/3,135 counties satisfy $0 < V < p(1-p)$; 0 infeasible | `PASS` | Mathematical existence satisfied |
-| **Beta Distribution-Shape Diagnostics** | 1 county ($\alpha < 1, \beta < 1$) is U-shaped; 1 county ($\beta < 1$) is monotone increasing | `REVIEW` | Flagged: Loving County, TX exhibits U-shaped density |
-| **Clustered-Inference Specification** | State-clustered SE with finite-sample adjustment; PR as Cluster 51; HC3 diagnostic | `PASS` | Pre-specified and mathematically verified |
-| **Wild Cluster Bootstrap Implementation Readiness** | Webb 6-point, $B = 999$, seed `20261018`, WCR11 test inversion | `REVIEW` | Local execution unverified: R/fwildclusterboot and Python wildboottest not installed |
-| **Weighting Decision** | Unweighted OLS primary; no inverse-MOE-squared in MC; household WLS deferred | `PASS` | Pre-specified and authorized |
-| **Overall Phase 4A Plan Status** | Comprehensive plan documented; input validation complete | `REVIEW` | Paused at governance gate pending resolution of shape diagnostics & bootstrap environment |
+| **Baseline OLS Models (A1, A2, B1, B2)** | 100/20 vs 25/3 models on primary ($N = 3,135$) and PR ($N = 3,213$) samples | **COMPLETE** | Documented in `reports/baseline_model_results.*` |
+| **Regression Diagnostics & LOO Influence** | Cook's distance, studentized residuals, and LOO influence check | **COMPLETE** | Max Cook's $D = 0.0195$; no single county shifts slopes by $> 0.015$ pp |
+| **Threshold Contrast Hypothesis Test** | State-clustered Wald test of $H_0: \beta_B - \beta_A = 0$ | **COMPLETE** | Diff $= +0.4910$ pp ($95\%\text{ CI}: [+0.2970, +0.6850]$, $p = 1.34 \times 10^{-6}$) |
+| **Beta Moment-Matched Feasibility** | 3,135/3,135 counties satisfy $0 < V < p(1-p)$; 0 infeasible | **PASS** | Strict mathematical feasibility verified |
+| **Beta Distribution-Shape Diagnostics** | Loving County, TX ($48301$) exhibits U-shaped Beta density | **PASS** | Handled via full simulation + fixed sensitivity scenario |
+| **ACS Outcome Uncertainty Propagation** | $M = 1,000$ paired Monte Carlo draws, seed `20261018`, Models A2 & B2 | **COMPLETE** | Documented in `reports/uncertainty_simulation_results.*` |
+| **Wild Cluster Bootstrap** | Webb 6-point, $B = 999$, seed `20261018`, WCR11 test inversion | **DEFERRED** | Preserved for future work; not executed |
+| **Household-Count Weighted WLS** | Optional population-weighted county estimand | **DEFERRED** | Unweighted OLS maintained as primary |
+| **Overall Phase 4 Status** | Baseline OLS and ACS Outcome Uncertainty Simulation completed | **COMPLETE** | All pre-specified Phase 4 deliverables implemented and verified |
 
-- **Execution Gate:** No regressions, correlations, simulations, or bootstrap computations may be run until ChatGPT reviews and authorizes substantive Phase 4B execution.
-- **Reproducibility:** All analytical scripts must use explicit seeds, deterministic joins, and write machine-readable JSON summaries alongside Markdown documentation.
+- **Reproducibility:** All analytical scripts use explicit seeds, deterministic joins, and write machine-readable JSON summaries alongside Markdown documentation and high-resolution figures.
