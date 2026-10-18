@@ -1,0 +1,347 @@
+{
+  "metadata": {
+    "audit_timestamp_utc": "2026-10-18T09:42:49.296178+00:00",
+    "fcc_input_file": {
+      "path": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_100_20_D25.csv",
+      "size_bytes": 163568
+    },
+    "census_input_file": {
+      "path": "data/raw/acs_b28002_2024_county.json",
+      "size_bytes": 220007
+    },
+    "user_observed_export_settings": {
+      "source_platform": "FCC National Broadband Map, Area Comparison, Fixed Broadband",
+      "geography_type": "County",
+      "data_type": "Total",
+      "service": "Residential",
+      "technology": "All Wired",
+      "speed_threshold": "at least 100 Mbps download / 20 Mbps upload (100/20 Mbps)",
+      "data_as_of": "Dec 30, 2025",
+      "interface_last_updated": "Oct 13, 2026",
+      "record_provenance": "Recorded as user-observed export settings from the FCC interface, not embedded metadata within the CSV."
+    },
+    "official_references": [
+      "https://help.bdc.fcc.gov/hc/en-us/articles/10467446103579-How-to-Use-the-FCC-s-National-Broadband-Map",
+      "https://help.bdc.fcc.gov/hc/en-us/articles/13532984820379-What-s-on-the-National-Broadband-Map",
+      "https://www.census.gov/programs-surveys/acs/geography-acs/areas-published.html",
+      "https://www.census.gov/programs-surveys/acs/geography-acs/geography-boundaries-by-year/2024.html"
+    ],
+    "field_semantic_documentation": {
+      "geography_id": "5-digit county FIPS code (string, preserving leading zeros).",
+      "geography_desc_full": "Geographic area name and state/territory postal abbreviation.",
+      "geography_type_total_units": "Total broadband serviceable locations (BSLs) or housing units in the geography. Official FCC documentation does not specify the precise denominator derivation.",
+      "data_type_total_units": "Total units corresponding to the selected data type filter. In this export, identical to geography_type_total_units in 100% of populated records.",
+      "percent_coverage": "Proportion of units with fixed broadband availability meeting or exceeding 100 Mbps download / 20 Mbps upload from all wired technologies (cable, fiber, DSL).",
+      "semantic_limitation_note": "Official FCC documentation does not define an explicit mathematical formula linking unit count columns to percent_coverage in the summary export. No undocumented equation is assumed."
+    },
+    "disclaimer": "This audit evaluates source-data integrity of the FCC export and geographic join compatibility with Census ACS Table B28002. FCC percent_coverage reflects facility-based fixed broadband network availability (at >=100/20 Mbps threshold) reported by service providers, whereas Census Table B28002 measures household-reported broadband internet subscriptions. This audit does not establish project feasibility, a causal relationship, or a quantified adoption-availability gap."
+  },
+  "overall_status": "PASS",
+  "hard_checks": {
+    "fcc_file_exists_and_nonempty": {
+      "status": "PASS",
+      "description": "FCC CSV file exists on disk and is nonempty.",
+      "details": {
+        "size_bytes": 163568
+      }
+    },
+    "fcc_csv_parsing": {
+      "status": "PASS",
+      "description": "FCC CSV parses successfully."
+    },
+    "fcc_header_schema": {
+      "status": "PASS",
+      "description": "Header columns match expected five fields in exact order.",
+      "columns": [
+        "geography_id",
+        "geography_desc_full",
+        "geography_type_total_units",
+        "data_type_total_units",
+        "percent_coverage"
+      ]
+    },
+    "fcc_nonempty_records": {
+      "status": "PASS",
+      "description": "FCC CSV contains data records.",
+      "details": {
+        "total_data_rows": 3234
+      }
+    },
+    "fcc_geography_id_format": {
+      "status": "PASS",
+      "description": "Every geography_id is a nonempty string of exactly five digits preserving leading zeros.",
+      "malformed_count": 0
+    },
+    "fcc_geography_id_unique": {
+      "status": "PASS",
+      "description": "No duplicate geography IDs exist in the FCC export.",
+      "duplicate_count": 0,
+      "unique_key_count": 3234
+    },
+    "fcc_geography_desc_nonempty": {
+      "status": "PASS",
+      "description": "Every geography description is a non-empty string.",
+      "empty_count": 0
+    },
+    "fcc_percent_coverage_valid": {
+      "status": "PASS",
+      "description": "percent_coverage parses as a finite float within [0.0, 1.0] for every row.",
+      "missing_count": 0,
+      "invalid_count": 0
+    },
+    "fcc_unit_counts_valid_when_present": {
+      "status": "PASS",
+      "description": "geography_type_total_units and data_type_total_units are nonnegative integers when present.",
+      "malformed_count": 0,
+      "negative_count": 0
+    }
+  },
+  "review_flags": {
+    "missing_unit_counts_review": {
+      "status": "REVIEW",
+      "description": "Report observed missing unit counts in FCC export (not converted to zero).",
+      "missing_geography_type_total_units_count": 2,
+      "missing_data_type_total_units_count": 2,
+      "examples": [
+        {
+          "row_index": 3147,
+          "geography_id": "60030",
+          "desc": "Rose Island, AS",
+          "raw_value": ""
+        },
+        {
+          "row_index": 3151,
+          "geography_id": "69085",
+          "desc": "Northern Islands Municipality, MP",
+          "raw_value": ""
+        }
+      ],
+      "notes": "Observed 2 records with empty unit count fields: 60030 (Rose Island, AS), 69085 (Northern Islands Municipality, MP). These values were faithfully retained as missing rather than coerced to zero."
+    },
+    "unit_counts_agreement_diagnostic": {
+      "status": "INFORMATIONAL",
+      "description": "Comparison between geography_type_total_units and data_type_total_units where both exist.",
+      "both_present_records": 3232,
+      "equal_count": 3232,
+      "differ_count": 0,
+      "agreement_percentage": 100.0,
+      "notes": "In all 3232 records where both unit count fields are populated, geography_type_total_units equals data_type_total_units exactly (100% agreement)."
+    }
+  },
+  "fcc_summary_metrics": {
+    "total_data_rows": 3234,
+    "unique_geography_ids": 3234,
+    "duplicate_geography_ids": 0,
+    "percent_coverage_statistics": {
+      "min": 0.0,
+      "max": 1.0,
+      "missing_count": 0,
+      "zero_count": 10,
+      "parsed_count": 3234
+    },
+    "unit_counts_statistics": {
+      "geography_type_total_units": {
+        "missing_count": 2,
+        "negative_count": 0,
+        "malformed_count": 0,
+        "min": 1,
+        "max": 4057654,
+        "zero_count": 0
+      },
+      "data_type_total_units": {
+        "missing_count": 2,
+        "negative_count": 0,
+        "malformed_count": 0,
+        "min": 1,
+        "max": 4057654,
+        "zero_count": 0
+      }
+    }
+  },
+  "geographic_compatibility": {
+    "census_total_data_rows": 3222,
+    "census_unique_keys_count": 3222,
+    "census_duplicate_keys_count": 0,
+    "fcc_total_data_rows": 3234,
+    "fcc_unique_geography_ids_count": 3234,
+    "fcc_duplicate_geography_ids_count": 0,
+    "exact_matching_keys_count": 3213,
+    "census_only_keys_count": 9,
+    "fcc_only_keys_count": 21,
+    "coverage_percentages": {
+      "census_keys_in_intersection_percentage": 99.72067,
+      "census_denominator": 3222,
+      "fcc_keys_in_intersection_percentage": 99.35065,
+      "fcc_denominator": 3234
+    },
+    "unmatched_analysis": {
+      "census_only_records": [
+        {
+          "key": "09110",
+          "name": "Capitol Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09120",
+          "name": "Greater Bridgeport Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09130",
+          "name": "Lower Connecticut River Valley Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09140",
+          "name": "Naugatuck Valley Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09150",
+          "name": "Northeastern Connecticut Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09160",
+          "name": "Northwest Hills Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09170",
+          "name": "South Central Connecticut Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09180",
+          "name": "Southeastern Connecticut Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        },
+        {
+          "key": "09190",
+          "name": "Western Connecticut Planning Region, Connecticut",
+          "group": "Connecticut Planning Region (2024 ACS county equivalent)"
+        }
+      ],
+      "fcc_only_records": [
+        {
+          "geography_id": "09001",
+          "name": "Fairfield County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09003",
+          "name": "Hartford County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09005",
+          "name": "Litchfield County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09007",
+          "name": "Middlesex County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09009",
+          "name": "New Haven County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09011",
+          "name": "New London County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09013",
+          "name": "Tolland County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "09015",
+          "name": "Windham County, CT",
+          "group": "Legacy Connecticut County (pre-2024 boundary)"
+        },
+        {
+          "geography_id": "60010",
+          "name": "Eastern District, AS",
+          "group": "U.S. Territory - American Samoa (FIPS 60)"
+        },
+        {
+          "geography_id": "60020",
+          "name": "Manu'a District, AS",
+          "group": "U.S. Territory - American Samoa (FIPS 60)"
+        },
+        {
+          "geography_id": "60030",
+          "name": "Rose Island, AS",
+          "group": "U.S. Territory - American Samoa (FIPS 60)"
+        },
+        {
+          "geography_id": "60040",
+          "name": "Swains Island, AS",
+          "group": "U.S. Territory - American Samoa (FIPS 60)"
+        },
+        {
+          "geography_id": "60050",
+          "name": "Western District, AS",
+          "group": "U.S. Territory - American Samoa (FIPS 60)"
+        },
+        {
+          "geography_id": "66010",
+          "name": "Guam, GU",
+          "group": "U.S. Territory - Guam (FIPS 66)"
+        },
+        {
+          "geography_id": "69085",
+          "name": "Northern Islands Municipality, MP",
+          "group": "U.S. Territory - Northern Mariana Islands (FIPS 69)"
+        },
+        {
+          "geography_id": "69100",
+          "name": "Rota Municipality, MP",
+          "group": "U.S. Territory - Northern Mariana Islands (FIPS 69)"
+        },
+        {
+          "geography_id": "69110",
+          "name": "Saipan Municipality, MP",
+          "group": "U.S. Territory - Northern Mariana Islands (FIPS 69)"
+        },
+        {
+          "geography_id": "69120",
+          "name": "Tinian Municipality, MP",
+          "group": "U.S. Territory - Northern Mariana Islands (FIPS 69)"
+        },
+        {
+          "geography_id": "78010",
+          "name": "St. Croix Island, VI",
+          "group": "U.S. Territory - U.S. Virgin Islands (FIPS 78)"
+        },
+        {
+          "geography_id": "78020",
+          "name": "St. John Island, VI",
+          "group": "U.S. Territory - U.S. Virgin Islands (FIPS 78)"
+        },
+        {
+          "geography_id": "78030",
+          "name": "St. Thomas Island, VI",
+          "group": "U.S. Territory - U.S. Virgin Islands (FIPS 78)"
+        }
+      ],
+      "unmatched_summary_by_group": {
+        "census_only": {
+          "Connecticut Planning Region (2024 ACS county equivalent)": 9
+        },
+        "fcc_only": {
+          "Legacy Connecticut County (pre-2024 boundary)": 8,
+          "U.S. Territory - American Samoa (FIPS 60)": 5,
+          "U.S. Territory - Guam (FIPS 66)": 1,
+          "U.S. Territory - Northern Mariana Islands (FIPS 69)": 4,
+          "U.S. Territory - U.S. Virgin Islands (FIPS 78)": 3
+        }
+      },
+      "boundary_alignment_findings": "The 9 Census-only records correspond to Connecticut's planning regions (FIPS 09110-09190), adopted as county-equivalents in the 2024 ACS 5-year data. The FCC Area Comparison export retains Connecticut's 8 legacy counties (FIPS 09001-09015). Do not perform an unverified many-to-many crosswalk or spatial allocation without formal methodological authorization. The remaining 13 FCC-only records represent island territories (American Samoa [5], Guam [1], Northern Mariana Islands [4], and U.S. Virgin Islands [3]) not included in the standard Census 50 States + DC + PR county extract."
+    }
+  }
+}
