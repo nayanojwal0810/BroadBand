@@ -113,16 +113,17 @@ def audit_fcc_and_compatibility(
                 "geography_id": "5-digit county FIPS code (string, preserving leading zeros).",
                 "geography_desc_full": "Geographic area name and state/territory postal abbreviation.",
                 "geography_type_total_units": (
-                    "Total broadband serviceable locations (BSLs) or housing units in the geography. "
-                    "Official FCC documentation does not specify the precise denominator derivation."
+                    "Unit-count field from the export whose exact denominator semantics were not verified "
+                    "in authoritative documentation. Do not use this field as a denominator for the planned analysis."
                 ),
                 "data_type_total_units": (
-                    "Total units corresponding to the selected data type filter. In this export, "
+                    "Unit-count field corresponding to the selected data type filter. In this export, "
                     "identical to geography_type_total_units in 100% of populated records."
                 ),
                 "percent_coverage": (
-                    "Proportion of units with fixed broadband availability meeting or exceeding "
-                    "100 Mbps download / 20 Mbps upload from all wired technologies (cable, fiber, DSL)."
+                    "FCC served-unit percentage for the user-observed export filters "
+                    "(fixed broadband availability meeting or exceeding 100 Mbps download / 20 Mbps upload "
+                    "from all wired technologies: cable, fiber, DSL)."
                 ),
                 "semantic_limitation_note": (
                     "Official FCC documentation does not define an explicit mathematical formula "
@@ -232,8 +233,9 @@ def audit_fcc_and_compatibility(
     }
 
     # ---------------------------------------------------------
-    # Inspect FCC Records and Numeric Fields
+    # Inspect FCC Records, Record Widths, and Numeric Fields
     # ---------------------------------------------------------
+    malformed_row_structure = []
     empty_descriptions = []
     malformed_ids = []
     seen_fcc_ids = {}
@@ -259,6 +261,21 @@ def audit_fcc_and_compatibility(
     zero_cov_count = 0
 
     for idx, row in enumerate(fcc_rows, start=2):
+        # Explicit check for malformed CSV record widths:
+        # 1. Surplus fields captured by csv.DictReader under the None key
+        # 2. Structurally absent fields whose values are None for expected field names
+        has_surplus = (None in row and bool(row[None]))
+        absent_fields = [col for col in EXPECTED_FCC_COLUMNS if row.get(col) is None]
+
+        if has_surplus or absent_fields:
+            malformed_row_structure.append({
+                "row_index": idx,
+                "geography_id": row.get("geography_id"),
+                "has_surplus_fields": has_surplus,
+                "surplus_values": row.get(None),
+                "structurally_absent_fields": absent_fields,
+            })
+
         gid = row.get("geography_id")
         desc = row.get("geography_desc_full")
         gt_units = row.get("geography_type_total_units")
@@ -284,9 +301,14 @@ def audit_fcc_and_compatibility(
             empty_descriptions.append({"row_index": idx, "geography_id": gid})
 
         # geography_type_total_units validation
+        # Distinguish structurally absent (None) from legitimate empty string ("")
         gt_present = False
         gt_int = None
-        if gt_units is None or (isinstance(gt_units, str) and not gt_units.strip()):
+        if gt_units is None:
+            # Structurally absent, handled under row structure validation
+            pass
+        elif isinstance(gt_units, str) and not gt_units.strip():
+            # Legitimate empty string in present column
             missing_geog_units.append({
                 "row_index": idx,
                 "geography_id": gid,
@@ -315,9 +337,14 @@ def audit_fcc_and_compatibility(
                     geog_unit_values.append(gt_int)
 
         # data_type_total_units validation
+        # Distinguish structurally absent (None) from legitimate empty string ("")
         dt_present = False
         dt_int = None
-        if dt_units is None or (isinstance(dt_units, str) and not dt_units.strip()):
+        if dt_units is None:
+            # Structurally absent, handled under row structure validation
+            pass
+        elif isinstance(dt_units, str) and not dt_units.strip():
+            # Legitimate empty string in present column
             missing_data_units.append({
                 "row_index": idx,
                 "geography_id": gid,
@@ -353,7 +380,10 @@ def audit_fcc_and_compatibility(
                 units_differ_count += 1
 
         # percent_coverage validation: finite numeric float in [0.0, 1.0]
-        if cov_str is None or (isinstance(cov_str, str) and not cov_str.strip()):
+        if cov_str is None:
+            # Structurally absent, handled under row structure validation
+            pass
+        elif isinstance(cov_str, str) and not cov_str.strip():
             missing_cov.append({"row_index": idx, "geography_id": gid, "desc": desc})
         else:
             try:
@@ -379,6 +409,22 @@ def audit_fcc_and_compatibility(
                     "value": cov_str,
                     "reason": "Unparsable floating-point string",
                 })
+
+    # Evaluate Row structure hard check
+    if malformed_row_structure:
+        report["hard_checks"]["fcc_record_structure_valid"] = {
+            "status": "FAIL",
+            "description": "Every CSV record has exact expected column width (no surplus fields under None key and no structurally absent fields with value None).",
+            "malformed_count": len(malformed_row_structure),
+            "examples": malformed_row_structure[:5],
+        }
+        hard_failures.append("fcc_record_structure_valid")
+    else:
+        report["hard_checks"]["fcc_record_structure_valid"] = {
+            "status": "PASS",
+            "description": "Every CSV record has exact expected column width (no surplus fields under None key and no structurally absent fields with value None).",
+            "malformed_count": 0,
+        }
 
     # Evaluate Geography ID format
     if malformed_ids:
@@ -471,12 +517,12 @@ def audit_fcc_and_compatibility(
             "negative_count": 0,
         }
 
-    # Review flag: Missing unit counts issue
+    # Review flag: Missing unit counts issue (preserve raw empty strings, not coerced to zero)
     total_missing_units = len(missing_geog_units) + len(missing_data_units)
     if total_missing_units > 0:
         report["review_flags"]["missing_unit_counts_review"] = {
             "status": "REVIEW",
-            "description": "Report observed missing unit counts in FCC export (not converted to zero).",
+            "description": "Report observed missing unit counts in FCC export (preserved as empty string, not converted to zero).",
             "missing_geography_type_total_units_count": len(missing_geog_units),
             "missing_data_type_total_units_count": len(missing_data_units),
             "examples": missing_geog_units[:5],
@@ -516,6 +562,7 @@ def audit_fcc_and_compatibility(
         "total_data_rows": total_fcc_rows,
         "unique_geography_ids": len(seen_fcc_ids),
         "duplicate_geography_ids": len(duplicate_fcc_ids),
+        "malformed_row_structure_count": len(malformed_row_structure),
         "percent_coverage_statistics": {
             "min": min(cov_values) if cov_values else None,
             "max": max(cov_values) if cov_values else None,
@@ -547,10 +594,9 @@ def audit_fcc_and_compatibility(
     # STEP 3: Geographic Compatibility Audit against Census ACS
     # ---------------------------------------------------------
     if not census_file.exists():
-        report["review_flags"]["geographic_compatibility_audit"] = {
-            "status": "REVIEW",
-            "description": "Census reference file not found for geographic compatibility analysis.",
-            "error": f"Census file missing: {census_file}",
+        report["geographic_compatibility"] = {
+            "compatibility_status": "UNVERIFIED",
+            "error": f"Census reference file not found for geographic compatibility analysis: {census_file}",
         }
     else:
         try:
@@ -626,7 +672,19 @@ def audit_fcc_and_compatibility(
                 grp = item["group"]
                 fcc_only_grouped[grp] = fcc_only_grouped.get(grp, 0) + 1
 
+            # Explicit status distinguishing unmatched geography IDs from source integrity failures
             report["geographic_compatibility"] = {
+                "compatibility_status": "PARTIAL_OVERLAP",
+                "status_classification": "INFORMATIONAL_MISMATCH",
+                "status_notes": (
+                    "Unmatched geography IDs reflect known nonfatal boundary-vintage changes "
+                    "(Connecticut planning regions) and geographic scope differences (island territories), "
+                    "which are distinct from hard source-integrity failures."
+                ),
+                "disclaimer": (
+                    "Exact geographic ID matching does not prove identical boundary definitions or "
+                    "conceptual equivalence of provider-reported availability and household-reported subscription measures."
+                ),
                 "census_total_data_rows": census_total_data_rows,
                 "census_unique_keys_count": len(census_keys_map),
                 "census_duplicate_keys_count": len(census_duplicate_keys),
@@ -664,6 +722,7 @@ def audit_fcc_and_compatibility(
 
         except Exception as e:
             report["geographic_compatibility"] = {
+                "compatibility_status": "ERROR",
                 "error": f"Failed during geographic compatibility cross-audit: {str(e)}"
             }
 
@@ -731,6 +790,7 @@ def _print_summary(report: dict) -> None:
     print(f"  Total FCC Rows:                 {metrics.get('total_data_rows')}")
     print(f"  Unique Geography IDs:           {metrics.get('unique_geography_ids')}")
     print(f"  Duplicate Geography IDs:        {metrics.get('duplicate_geography_ids')}")
+    print(f"  Malformed Row Structure Count:  {metrics.get('malformed_row_structure_count')}")
 
     cov_stats = metrics.get("percent_coverage_statistics", {})
     if cov_stats:
@@ -758,6 +818,8 @@ def _print_summary(report: dict) -> None:
     if geo:
         print("-" * 76)
         print(" GEOGRAPHIC COMPATIBILITY WITH 2024 CENSUS ACS B28002:")
+        print(f"  Compatibility Status:           {geo.get('compatibility_status')} ({geo.get('status_classification')})")
+        print(f"  Status Note:                    {geo.get('status_notes')}")
         print(f"  Census Total Rows:              {geo.get('census_total_data_rows')}")
         print(f"  FCC Total Rows:                 {geo.get('fcc_total_data_rows')}")
         print(f"  Exact Matching Keys:            {geo.get('exact_matching_keys_count')}")

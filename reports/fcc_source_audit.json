@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "audit_timestamp_utc": "2026-10-18T09:42:49.296178+00:00",
+    "audit_timestamp_utc": "2026-10-18T10:10:27.888665+00:00",
     "fcc_input_file": {
       "path": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_100_20_D25.csv",
       "size_bytes": 163568
@@ -29,9 +29,9 @@
     "field_semantic_documentation": {
       "geography_id": "5-digit county FIPS code (string, preserving leading zeros).",
       "geography_desc_full": "Geographic area name and state/territory postal abbreviation.",
-      "geography_type_total_units": "Total broadband serviceable locations (BSLs) or housing units in the geography. Official FCC documentation does not specify the precise denominator derivation.",
-      "data_type_total_units": "Total units corresponding to the selected data type filter. In this export, identical to geography_type_total_units in 100% of populated records.",
-      "percent_coverage": "Proportion of units with fixed broadband availability meeting or exceeding 100 Mbps download / 20 Mbps upload from all wired technologies (cable, fiber, DSL).",
+      "geography_type_total_units": "Unit-count field from the export whose exact denominator semantics were not verified in authoritative documentation. Do not use this field as a denominator for the planned analysis.",
+      "data_type_total_units": "Unit-count field corresponding to the selected data type filter. In this export, identical to geography_type_total_units in 100% of populated records.",
+      "percent_coverage": "FCC served-unit percentage for the user-observed export filters (fixed broadband availability meeting or exceeding 100 Mbps download / 20 Mbps upload from all wired technologies: cable, fiber, DSL).",
       "semantic_limitation_note": "Official FCC documentation does not define an explicit mathematical formula linking unit count columns to percent_coverage in the summary export. No undocumented equation is assumed."
     },
     "disclaimer": "This audit evaluates source-data integrity of the FCC export and geographic join compatibility with Census ACS Table B28002. FCC percent_coverage reflects facility-based fixed broadband network availability (at >=100/20 Mbps threshold) reported by service providers, whereas Census Table B28002 measures household-reported broadband internet subscriptions. This audit does not establish project feasibility, a causal relationship, or a quantified adoption-availability gap."
@@ -67,6 +67,11 @@
         "total_data_rows": 3234
       }
     },
+    "fcc_record_structure_valid": {
+      "status": "PASS",
+      "description": "Every CSV record has exact expected column width (no surplus fields under None key and no structurally absent fields with value None).",
+      "malformed_count": 0
+    },
     "fcc_geography_id_format": {
       "status": "PASS",
       "description": "Every geography_id is a nonempty string of exactly five digits preserving leading zeros.",
@@ -99,7 +104,7 @@
   "review_flags": {
     "missing_unit_counts_review": {
       "status": "REVIEW",
-      "description": "Report observed missing unit counts in FCC export (not converted to zero).",
+      "description": "Report observed missing unit counts in FCC export (preserved as empty string, not converted to zero).",
       "missing_geography_type_total_units_count": 2,
       "missing_data_type_total_units_count": 2,
       "examples": [
@@ -132,6 +137,7 @@
     "total_data_rows": 3234,
     "unique_geography_ids": 3234,
     "duplicate_geography_ids": 0,
+    "malformed_row_structure_count": 0,
     "percent_coverage_statistics": {
       "min": 0.0,
       "max": 1.0,
@@ -159,6 +165,10 @@
     }
   },
   "geographic_compatibility": {
+    "compatibility_status": "PARTIAL_OVERLAP",
+    "status_classification": "INFORMATIONAL_MISMATCH",
+    "status_notes": "Unmatched geography IDs reflect known nonfatal boundary-vintage changes (Connecticut planning regions) and geographic scope differences (island territories), which are distinct from hard source-integrity failures.",
+    "disclaimer": "Exact geographic ID matching does not prove identical boundary definitions or conceptual equivalence of provider-reported availability and household-reported subscription measures.",
     "census_total_data_rows": 3222,
     "census_unique_keys_count": 3222,
     "census_duplicate_keys_count": 0,
