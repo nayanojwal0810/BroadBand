@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "audit_timestamp_utc": "2026-10-18T10:10:27.888665+00:00",
+    "audit_timestamp_utc": "2026-10-18T10:18:46.552115+00:00",
     "fcc_input_file": {
       "path": "data/raw/bdc_comparison_fixed_county_total_all_wired_r_100_20_D25.csv",
       "size_bytes": 163568
@@ -99,6 +99,14 @@
       "description": "geography_type_total_units and data_type_total_units are nonnegative integers when present.",
       "malformed_count": 0,
       "negative_count": 0
+    },
+    "census_dependency_valid": {
+      "status": "PASS",
+      "description": "Census ACS reference input exists, parses as valid JSON, satisfies the 7-variable schema, and passes all established Census hard checks.",
+      "details": {
+        "census_total_data_rows": 3222,
+        "census_unique_keys_count": 3222
+      }
     }
   },
   "review_flags": {
